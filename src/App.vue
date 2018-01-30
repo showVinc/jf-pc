@@ -59,7 +59,7 @@
     font-family: "Microsoft YaHei";
   }
   #app{
-    max-width: 1200px;
+    max-width: 1140px;
     min-height: calc(~'100vh - 270px');
     margin: 0 auto;
     min-width: 1024px;

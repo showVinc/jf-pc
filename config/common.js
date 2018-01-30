@@ -25,10 +25,10 @@ switch(branch) {
 
 module.exports = {
   prov_url: {
-    KLOCL: `"${http_url}`,
+    JF: `"${http_url}`,
   },
   dev_url: {
-    KLOCL: `"${dev_url}:8066"`,
+    JF: `"${dev_url}:8066"`,
   },
   prov_api: {
     API: `"${http_api}/${version}"`,
