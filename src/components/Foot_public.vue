@@ -1,17 +1,33 @@
 <template>
   <div class="publicFoot">
-    <div class="footLeft">
-      <img src="../assets/images/public_img/foot_logo.png" @click="$router.push('/')">
-      <span>
-        {{$t('copyright')}}
-      </span>
-    </div>
-    <div class="footRight">
-      <ul>
-        <li v-for="item in footList" @click="footClick(item)">
-          {{item.name}}
-        </li>
-      </ul>
+    <div class="footWrap">
+      <div class="footHeadWrap">
+        <div class="footLeft">
+          <ul class="footFirst">
+            <li v-for="item in footList">
+              {{item.name}}
+            </li>
+          </ul>
+          <ul class="footRight">
+            <li>
+              商务合作邮箱：info@jf-fn.com
+            </li>
+            <li>
+              电话：400-081-6118
+            </li>
+            <li>
+              地址：深圳市福田区益田路5033号平安金融中心73楼
+            </li>
+          </ul>
+        </div>
+        <div class="footRight">
+          <img src="../assets/images/public_img/arrow.png">
+          <img src="../assets/images/public_img/arrow.png">
+        </div>
+      </div>
+      <div class="footLastWrap">
+        copyright
+      </div>
     </div>
   </div>
 </template>
@@ -21,102 +37,102 @@
       return {
         footList:[
           {
-            name:this.$t('foot1'),
+            name:'首页'
           },
           {
-            name:this.$t('foot2'),
-          },
-//          {
-//            name:this.$t('foot3'),
-//          },
-          {
-            name:this.$t('foot4'),
+            name:'纵观天下'
           },
           {
-            name:this.$t('foot5'),
+            name:'美好生活'
           },
           {
-            name:this.$t('foot6'),
+            name:'金丰研究所'
+          },
+          {
+            name:'关于我们'
           }
         ]
       }
     },
     methods:{
-      footClick(item){
-        switch (item.name){
-          case this.$t('foot1'):
-            this.$router.push('/about')
-            break;
-          case this.$t('foot2'):
-            this.$router.push('/news')
-            break;
-          case this.$t('foot4'):
-            this.$router.push('/about/place')
-            break;
-          case this.$t('foot5'):
-            this.$router.push('/about/contact')
-            break;
-          case this.$t('foot6'):
-            this.$router.push('/about/administration')
-            break;
-        }
-      }
     }
   }
 </script>
 <style lang="less" type="text/less" scoped>
   .publicFoot{
-    height: 120px;
-    background: #212125;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    width: 100%;
+    height: 170px;
     position: absolute;
     bottom: 0;
-    width: 100%;
-    min-width: 1024px;
-    max-width: 1200px;
-    box-sizing: border-box;
-    color: #ebebeb;
-    font-size: 13px;
-    padding: 0 50px;
-    .footLeft{
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(3,3,3,0.7);
+    .footWrap{
       display: flex;
       flex-direction: column;
-      img{
-        width: 35px;
-        height: 35px;
-        margin-bottom: 10px;
-      }
-    }
-    .footRight{
-      ul{
+      width: 1140px;
+      height: 100%;
+      .footHeadWrap{
+        font-size: 14px;
+        color: #999;
         display: flex;
-        min-height: 50px;
-        li{
-          position: relative;
-          margin-right: 60px;
+        justify-content: space-between;
+        align-items: center;
+        height: 130px;
+        border-bottom: 1px solid #717171;
+        .footLeft{
           display: flex;
-          align-items: center;
-          &:before{
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: #ebebeb;
-            position: absolute;
-            border-radius: 50%;
-            right: -30px;
-            top:calc(~'50% - 2px');
+          flex-direction: column;
+          .footFirst{
+            display: flex;
+            margin-bottom: 15px;
+            li{
+              position: relative;
+              padding:0 15px;
+              &:first-child{
+                padding-left: 0;
+              }
+              &:before{
+                content: '';
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: #fff;
+                position: absolute;
+                right: 0;
+                top: calc(~'50% - 2.5px');
+              }
+            }
           }
-          &:last-child{
-            margin: 0;
-            &:before{
-              content: '';
-              width: 0;
-              height: 0;
+          .footRight{
+            display: flex;
+            li{
+              margin-right: 40px;
+              &:last-child{
+                margin: 0;
+              }
             }
           }
         }
+        .footRight{
+          img{
+            width: 40px;
+            height: 40px;
+            &:last-child{
+              margin-left: 15px;
+            }
+          }
+        }
+      }
+      .footLastWrap{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(~'100% - 130px');
+        font-size: 12px;
+        color: #999;
       }
     }
   }
