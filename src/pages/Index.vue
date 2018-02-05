@@ -1,10 +1,10 @@
 <template>
   <div class="home">
-    <head-public></head-public>
+    <head-public :nav="0" :style="headTop"></head-public>
     <div class="banner">
       <el-carousel indicator-position="outside">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <img src="../assets/images/home/news_banner.png">
+        <el-carousel-item v-for="item in 1" :key="item">
+          <img src="../assets/images/home/home_banner.png">
         </el-carousel-item>
       </el-carousel>
       <div class="bannerText">
@@ -41,7 +41,12 @@
           <ul class="topHeadList">
             <li v-for="item,index in topList.list" v-if="index<3">
               <div class="topHeadImg">
-                <img :src="item.img">
+                <div>
+                  <img :src="item.img">
+                </div>
+                <p>
+                  TOP {{index+1}}
+                </p>
               </div>
               <div class="topMain">
                 <div class="mainFirst">
@@ -61,7 +66,9 @@
             <ul class="topFooList">
               <li v-for="item,index in topList.list" v-if="index>2">
                 <div class="num">
-                  {{index+1}}
+                  <span>
+                   {{index+1}}
+                  </span>
                 </div>
                 <div class="content">
                   <div>
@@ -75,11 +82,27 @@
                 </div>
               </li>
             </ul>
-            <div class="moreBtn">
+            <div class="moreBtn" @click="$router.push('/news')">
               更多
             </div>
           </div>
         </div>
+      </div>
+      <div class="introduce">
+        <img src="../assets/images/home/home_foot.png">
+      </div>
+      <div class="partner">
+        <div class="partnerTitle">
+          合作伙伴
+          <p>partner</p>
+        </div>
+        <ul class="partnerImg">
+          <li v-for="item in footList">
+            <div>
+              <img :src="item.img">
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
     <foot-public></foot-public>
@@ -91,6 +114,12 @@
       return {
         loading:false,
         userInfo:{},
+        headTop:{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          'z-index':999
+        },
         dataList:[
           {
             name:'上证指数',
@@ -187,6 +216,27 @@
             total_pages:1
           }
         },
+        footList:[
+          {
+            img:require('../assets/images/foot/foot1.png')
+          }, {
+            img:require('../assets/images/foot/foot2.png')
+          }, {
+            img:require('../assets/images/foot/foot3.png')
+          }, {
+            img:require('../assets/images/foot/foot4.png')
+          }, {
+            img:require('../assets/images/foot/foot5.png')
+          }, {
+            img:require('../assets/images/foot/foot6.png')
+          }, {
+            img:require('../assets/images/foot/foot7.png')
+          }, {
+            img:require('../assets/images/foot/foot8.png')
+          }, {
+            img:require('../assets/images/foot/foot9.png')
+          },
+        ]
       }
     },
     methods: {
@@ -195,22 +245,6 @@
       },
       moreBtn(){
         let self = this
-        self.lists.page.p++
-        self.$http.get(`${process.env.API.API}/dict/brand`,{params:{rows:20,p:self.lists.page.p}}).then(res=>{
-          self.loading = true
-          if(res.data.errcode=='0'){
-            self.lists.list =  self.lists.list.concat(res.data.data)
-            self.lists.page = res.data.page
-            setTimeout(()=>{
-              self.loading = false
-            },2000)
-          }else{
-            self.loading = false
-          }
-        }).catch(err=>{
-          self.loading = false
-          console.log(err)
-        })
       },
       urlShow(item){
         if(item.url){
@@ -230,23 +264,23 @@
       if(this.$route.params&&this.$route.params.isOne==1){
         location.reload()
       }
-      self.$http.get(`${process.env.API.API}/ad/index`).then(res=>{
-        if(res.data.errcode=='0'){
-          self.bannerInfo.list = res.data.data
-          self.bannerInfo.page = res.data.page
-        }
-      }).catch(err=>{
-        console.log(err)
-      })
-
-      self.$http.get(`${process.env.API.API}/dict/brand`,{params:{rows:20,p:1}}).then(res=>{
-        if(res.data.errcode=='0'){
-          self.lists.list = res.data.data
-          self.lists.page = res.data.page
-        }
-      }).catch(err=>{
-        console.log(err)
-      })
+//      self.$http.get(`${process.env.API.API}/ad/index`).then(res=>{
+//        if(res.data.errcode=='0'){
+//          self.bannerInfo.list = res.data.data
+//          self.bannerInfo.page = res.data.page
+//        }
+//      }).catch(err=>{
+//        console.log(err)
+//      })
+//
+//      self.$http.get(`${process.env.API.API}/dict/brand`,{params:{rows:20,p:1}}).then(res=>{
+//        if(res.data.errcode=='0'){
+//          self.lists.list = res.data.data
+//          self.lists.page = res.data.page
+//        }
+//      }).catch(err=>{
+//        console.log(err)
+//      })
     },
     //获取底部组件
     components: {}
@@ -283,12 +317,10 @@
     }
   }
   .publicMain{
-    width: 100%;
-    display: flex;
-    justify-content: center;
     padding: 50px 0;
     .selected{
       width: 1140px;
+      margin-bottom: 30px;
       .selectedTitle{
         display: flex;
         flex-direction: column;
@@ -299,7 +331,7 @@
         p{
           font-size: 24px;
           color: #999;
-          margin: 20px 0 60px;
+          margin: 10px 0 60px;
         }
       }
       .selectedMain{
@@ -311,6 +343,16 @@
             border:1px solid #e9e9e9;
             box-sizing: border-box;
             transition: all 0.5s;
+             &:hover{
+               box-shadow: 0 2px 5px #ccc;
+               .topHeadImg{
+                 div{
+                   img{
+                     transform: scale(1.1);
+                   }
+                 }
+               }
+             }
             .topMain{
               width: 100%;
               height: 220px;
@@ -360,10 +402,30 @@
               margin: 0;
             }
             .topHeadImg{
-              img{
-                width: 100%;
+              position: relative;
+              div{
+                overflow: hidden;
                 height: 270px;
-                object-fit: cover;
+                img{
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  transition: all 0.5s;
+                }
+              }
+              p{
+                width: 100px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-image: url('../assets/images/home/hot.png');
+                background-size: cover;
+                color: #fff;
+                font-size: 22px;
+                position: absolute;
+                top: 25px;
+                left: -1px;
               }
             }
           }
@@ -383,6 +445,11 @@
               transition: all 0.5s;
               &:hover{
                 background: #f5f2ec;
+                .imgRight{
+                  img{
+                    transform: scale(1.1);
+                  }
+                }
               }
               .num{
                 width: 28px;
@@ -390,8 +457,13 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-image: url("../assets/images/public_img/arrow.png");
+                background-image: url("../assets/images/home/message.png  ");
                 background-size: cover;
+                font-size: 14px;
+                color: #9d8148;
+                span{
+                  padding-bottom: 5px;
+                }
               }
               .content{
                 width: calc(~'100% - 175px');
@@ -417,10 +489,12 @@
                 }
               }
               .imgRight{
+                overflow: hidden;
                 img{
                   width: 147px;
                   height: 110px;
                   object-fit: cover;
+                  transition: all 0.5s;
                 }
               }
             }
@@ -435,6 +509,57 @@
             border:1px solid #9d8148;
             box-sizing: border-box;
             margin: 20px 0 60px;
+            border-radius: 5px;
+          }
+        }
+      }
+    }
+    .introduce{
+      margin-bottom: 50px;
+      img{
+        width: 100%;
+      }
+    }
+    .partner{
+      width: 1140px;
+      .partnerTitle{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        font-size: 33px;
+        color: #000;
+        margin-bottom: 60px;
+        p{
+          font-size: 26px;
+          color: #999;
+        }
+      }
+      .partnerImg{
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        li{
+          height: 45px;
+          margin-bottom: 30px;
+          div{
+           margin-right: 30px;
+            height: 100%;
+            box-sizing: border-box;
+            &:hover{
+             img{
+               filter: grayscale(0%);
+               opacity: 1;
+             }
+            }
+            img{
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              filter: grayscale(100%);
+              transition: all 0.5s;
+              opacity: 0.4;
+            }
           }
         }
       }

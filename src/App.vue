@@ -42,15 +42,15 @@
     mounted(){
       let self = this
       let uid = localStorage.getItem('authorization')
-      if(uid){
-        self.$http.get(`${process.env.API.API}/user/pi`).then(res=>{
-          if(res.data.errcode=='0'){
-            this.$store.state.userInfo = res.data.data
-          }
-        }).catch(err=>{
-          console.log(err)
-        })
-      }
+//      if(uid){
+//        self.$http.get(`${process.env.API.API}/user/pi`).then(res=>{
+//          if(res.data.errcode=='0'){
+//            this.$store.state.userInfo = res.data.data
+//          }
+//        }).catch(err=>{
+//          console.log(err)
+//        })
+//      }
     }
   }
 </script>
@@ -66,5 +66,7 @@
     position: relative;
     padding-bottom: 170px;
     /*margin-bottom: 30px;*/
+    font-family:"PingFangSC-Regular", "sans-serif","Microsoft YaHei","微软雅黑";
+    color: #333;
   }
 </style>

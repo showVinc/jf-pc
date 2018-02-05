@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <head-public></head-public>
+    <head-public :nav="1"></head-public>
     <div class="loginMain">
       <div class="loginTit">
         {{$t('login')}}

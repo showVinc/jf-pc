@@ -21,12 +21,12 @@
           </ul>
         </div>
         <div class="footRight">
-          <img src="../assets/images/public_img/arrow.png">
-          <img src="../assets/images/public_img/arrow.png">
+          <img src="../assets/images/home/wechat.png">
+          <img src="../assets/images/home/kf.png">
         </div>
       </div>
       <div class="footLastWrap">
-        copyright
+        Copyright©金丰平安 深圳金丰平安互联网金融服务有限公司 All Rights Reserved 版权所有 复制必究
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(3,3,3,0.7);
+    background: rgba(3,3,3,.8);
     .footWrap{
       display: flex;
       flex-direction: column;
@@ -93,6 +93,13 @@
               padding:0 15px;
               &:first-child{
                 padding-left: 0;
+              }
+              &:last-child{
+                &:before{
+                  content: '';
+                  width: 0;
+                  height: 0;
+                }
               }
               &:before{
                 content: '';

@@ -6,7 +6,7 @@
           <img src="../assets/images/public_img/logo.png" @click="$router.push('/')">
         </div>
         <ul class="topNav">
-          <li v-for="item,index in navList" :class="{active:index==navNum}" @click="navNum=index">
+          <li v-for="item,index in navList" :class="{active:index==navNum}" @click="topClick(item)">
             {{item.name}}
           </li>
         </ul>
@@ -15,7 +15,7 @@
         <div class="topSearch">
           <img src="../assets/images/public_img/search.png">
         </div>
-        <div class="loginBtn">
+        <div class="loginBtn" @click="$router.push('/login')">
           登录
         </div>
         <div class="showTime">
@@ -27,6 +27,7 @@
 </template>
 <script>
   export default {
+    props:['nav'],
     data(){
       return {
         langShow:false,
@@ -34,16 +35,20 @@
         userInfo:{},
         isLogin:false,
         uid:'',
-        navNum:0,
+        navNum:null,
         navList:[
           {
-            name:'首页'
+            name:'首页',
+            path:'/'
           }, {
-            name:'咨询全览'
+            name:'咨询全览',
+            path:'/news'
           },{
-            name:'美好生活'
+            name:'美好生活',
+            path:'/life'
           },{
-            name:'金丰研究所'
+            name:'金丰研究所',
+            path:'/research'
           }
         ],
         userList: [{
@@ -87,8 +92,9 @@
           }
         }
       },
-      isLang(){
-        this.langShow = !this.langShow
+      topClick(item){
+        this.$router.push(item.path)
+        document.title = item.name
       },
       isUser(){
         this.userShow = !this.userShow
@@ -100,6 +106,7 @@
     mounted(){
       this.uid = localStorage.getItem('authorization')
       let self = this
+      self.navNum = this.nav
       setTimeout(()=>{
         self.userInfo = self.$store.state.userInfo
       },300)
@@ -117,17 +124,14 @@
 </script>
 <style lang="less" type="text/less" scoped>
   .publicTop{
-    position: fixed;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    top: 0;
-    left: 0;
     height: 80px;
-    background: rgba(3,3,3,0.7);
-    z-index:999;
+    background: rgba(3,3,3,0.8);
+    margin-bottom: 20px;
     .topContent{
       display: flex;
       align-items: center;

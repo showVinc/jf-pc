@@ -18,6 +18,7 @@ export default new Router({
       name: 'Build',
       component: resolve=>require(['@/components/Build'],resolve)
     },
+    //登录
     {
       path: '/login',
       name: 'Login',
@@ -28,6 +29,24 @@ export default new Router({
       path: '/user',
       name: 'User',
       component: resolve=>require(['@/pages/User/Index'],resolve)
+    },
+    //资讯
+    {
+      path: '/news',
+      name: 'News',
+      component: resolve=>require(['@/pages/News/Index'],resolve)
+    },
+    //生活
+    {
+      path: '/life',
+      name: 'Life',
+      component: resolve=>require(['@/pages/Life/Index'],resolve)
+    },
+    //研究所
+    {
+      path: '/research',
+      name: 'Research',
+      component: resolve=>require(['@/pages/Research/Index'],resolve)
     },
   ]
 })
