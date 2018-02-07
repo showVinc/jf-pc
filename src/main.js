@@ -28,6 +28,13 @@ Vue.prototype.$moment = Moment
 
 Vue.config.productionTip = false
 
+router.beforeEach((to, from, next) => {
+  if (to.path != from.path) {
+    window.scrollTo(0,0)
+  }
+  next()
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

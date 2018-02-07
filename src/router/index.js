@@ -5,7 +5,7 @@ import Index from '@/pages/Index'
 Vue.use(Router)
 
 export default new Router({
-  mode:'history',
+  // mode:'history',
   routes: [
     {
       path: '/',
@@ -24,6 +24,12 @@ export default new Router({
       name: 'Login',
       component: resolve=>require(['@/pages/Login/Login'],resolve)
     },
+    //评估
+    {
+      path: '/login/assessment',
+      name: 'LoginAssessment',
+      component: resolve=>require(['@/pages/Login/Assessment'],resolve)
+    },
     //用户类
     {
       path: '/user',
@@ -35,6 +41,11 @@ export default new Router({
       path: '/news',
       name: 'News',
       component: resolve=>require(['@/pages/News/Index'],resolve)
+    },
+    {
+      path: '/news/detail',
+      name: 'NewsDetail',
+      component: resolve=>require(['@/pages/News/Detail'],resolve)
     },
     //生活
     {

@@ -66,7 +66,7 @@
         </div>
       </div>
     </div>
-    <foot-public></foot-public>
+    <foot-public  :nav="3"></foot-public>
   </div>
 </template>
 <script>
@@ -207,7 +207,7 @@
         setTimeout(()=>{
           self.researchList = self.researchList.concat(self.researchList)
           self.loading = false
-        },500)
+        },1000)
       },
       navClick(item, index) {
         let self = this
@@ -400,6 +400,7 @@
                 justify-content: center;
                 color: #fff;
                 margin-right: 15px;
+                font-size: 14px;
               }
               div{
                 width: calc(~'100% - 33px');

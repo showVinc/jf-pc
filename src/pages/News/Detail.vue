@@ -2,24 +2,26 @@
   <div class="life">
     <head-public :nav="2"></head-public>
     <div class="lifeWrap">
-      <div class="lifeBanner">
-        <img src="../../assets/images/life/top_banner.png">
+      <div class="newsDetailWrap">
+        <div class="title">
+          {{newsInfo.title}}
+        </div>
+        <div class="date">
+          <span>{{newsInfo.date}}</span>
+          <div class="star">
+            <div>
+              收藏
+            </div>
+          </div>
+        </div>
+        <div class="main" v-html="newsInfo.content">
+
+        </div>
       </div>
-      <ul class="lifeList">
-        <li v-for="item in lifeList">
-          <div class="lifeBg">
-            <img :src="item.img">
-          </div>
-          <div class="lifeListMain">
-            <img :src="item.icon">
-            {{item.name}}
-          </div>
-        </li>
-      </ul>
-      <div class="news"  v-loading="loading">
+      <div class="news">
         <div class="newsTit">
           <span></span>
-          相关资讯
+          您可能感兴趣的文章
         </div>
         <ul class="newsList">
           <li v-for="item in newsList">
@@ -36,38 +38,20 @@
             </div>
           </li>
         </ul>
-        <div class="moreBtn" @click="moreClick">
-          加载更多
-        </div>
       </div>
     </div>
-    <foot-public  :nav="2"></foot-public>
+    <foot-public></foot-public>
   </div>
 </template>
 <script>
   export default {
     data(){
       return {
-        loading:false,
-        lifeList:[
-          {
-            name:'便捷跨境',
-            icon:require('../../assets/images/life/icon1.png'),
-            img:require('../../assets/images/life/nav1.png')
-          },{
-            name:'海外投资',
-            icon:require('../../assets/images/life/icon2.png'),
-            img:require('../../assets/images/life/nav2.png')
-          },{
-            name:'品质生活',
-            icon:require('../../assets/images/life/icon3.png'),
-            img:require('../../assets/images/life/nav3.png')
-          },{
-            name:'优质教育',
-            icon:require('../../assets/images/life/icon4.png'),
-            img:require('../../assets/images/life/nav4.png')
-          }
-        ],
+        newsInfo:{
+          content:'测阿斯加德哈手机宽带哈手机宽带哈数据的哈吉斯的高仿黄金时代个环境第三方更多数据锋哥是带红酒是的话凡哥说的黄金分割山东黄金凡哥说的黄金分割山东黄金闪电发货公司电话金丰定个时间凡哥说的返回结果闪电发货申达股份黄金时代高仿黄金时代国防建设试',
+          title:'测试标题',
+          date:'2018-02-07'
+        },
         newsList:[
           {
             title:'展望2019放撒开绿灯就撒啊设计的婚纱的哈斯卡混沌斯卡迪哈斯卡的开了都结束了卡德加撒赖扩大',
@@ -106,14 +90,7 @@
       }
     },
     methods:{
-      moreClick(){
-        let self = this
-        self.loading = true
-        setTimeout(()=>{
-          self.newsList = self.newsList.concat(self.newsList)
-          self.loading = false
-        },500)
-      }
+
     }
   }
 </script>
@@ -125,58 +102,47 @@
     flex-direction: column;
     width: 100%;
     .lifeWrap{
-      width: 1140px;
-      .lifeBanner{
+      width: 100%;
+      max-width: 1140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 30px;
+      .newsDetailWrap{
         width: 100%;
-        margin-bottom: 20px;
-      }
-      .lifeList{
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        width: 100%;
-        li{
-          width: calc(~'50% - 10px');
-          margin-bottom: 20px;
-          height: 310px;
-          position: relative;
-          transition: all 0.5s;
-          &:hover{
-            box-shadow: 0 2px 5px #ccc;
-            .lifeBg{
-              img{
-                transform: scale(1.1);
-              }
+        max-width: 800px;
+        color: #000;
+        .title{
+          font-size: 24px;
+          text-align: center;
+        }
+        .date{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 40px 0;
+          span{
+            font-size: 12px;
+            color: #666;
+          }
+          .star{
+            div{
+              font-size: 14px;
+              width: 60px;
+              height: 30px;
+              color: #ccc;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 25px;
+              border:1px solid #ccc;
             }
           }
-          .lifeBg{
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            img{
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-              transition: all 0.5s;
-            }
-          }
-          .lifeListMain{
-            position: absolute;
-            font-size: 24px;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top:0;
-            img{
-              width: 58px;
-              margin-bottom: 15px;
-            }
-          }
+        }
+        .main{
+          font-size: 14px;
+          color: #333;
         }
       }
       .news{
@@ -213,7 +179,7 @@
           &:after{
             content: '';
             position: absolute;
-            width: calc(~'100% - 130px');
+            width: calc(~'100% - 220px');
             height: 1px;
             right: 20px;
             top:calc(~'50% - 0.5px');
@@ -274,16 +240,6 @@
               }
             }
           }
-        }
-        .moreBtn{
-          width: 100px;
-          height: 38px;
-          border: 1px solid #9d8148;
-          color: #9d8148;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 5px;
         }
       }
     }

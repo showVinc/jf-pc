@@ -3,7 +3,7 @@
     <head-public :nav="0" :style="headTop"></head-public>
     <div class="banner">
       <el-carousel indicator-position="outside">
-        <el-carousel-item v-for="item in 1" :key="item">
+        <el-carousel-item v-for="item,index in 1" :key="index">
           <img src="../assets/images/home/home_banner.png">
         </el-carousel-item>
       </el-carousel>
@@ -12,7 +12,7 @@
           知己知彼，让理财不慌不乱
           <p>个人风险评估测试：<span>1分钟</span>开启优质理财生活</p>
         </div>
-        <div class="assessmentBtn">
+        <div class="assessmentBtn" @click="$router.push({name:'LoginAssessment'})">
           开始评估
         </div>
       </div>
@@ -105,7 +105,7 @@
         </ul>
       </div>
     </div>
-    <foot-public></foot-public>
+    <foot-public :nav="0"></foot-public>
   </div>
 </template>
 <script>
@@ -298,7 +298,8 @@
     .dataWrap{
       display: flex;
       align-items: center;
-      width: 1140px;
+      width: 100%;
+      max-width: 1140px;
     }
     ul{
       margin-left: 15px;
@@ -319,7 +320,8 @@
   .publicMain{
     padding: 50px 0;
     .selected{
-      width: 1140px;
+      width: 100%;
+      max-width: 1140px;
       margin-bottom: 30px;
       .selectedTitle{
         display: flex;
@@ -359,7 +361,7 @@
               display: flex;
               flex-direction: column;
               justify-content: space-between;
-              padding: 20px;
+              padding: 15px 20px 20px;
               box-sizing: border-box;
               .mainFirst{
                 font-size: 18px;
@@ -521,7 +523,8 @@
       }
     }
     .partner{
-      width: 1140px;
+      width: 100%;
+      max-width: 1140px;
       .partnerTitle{
         display: flex;
         justify-content: center;
@@ -541,9 +544,8 @@
         width: 100%;
         li{
           height: 45px;
-          margin-bottom: 30px;
+          margin:0 70px 30px 0;
           div{
-           margin-right: 30px;
             height: 100%;
             box-sizing: border-box;
             &:hover{
@@ -553,7 +555,7 @@
              }
             }
             img{
-              width: 100%;
+              /*width: 100%;*/
               height: 100%;
               object-fit: cover;
               filter: grayscale(100%);
@@ -586,7 +588,7 @@
         font-size: 41px;
         p{
           font-size: 34px;
-          margin: 30px 0 110px;
+          margin: 20px 0 110px;
           span{
             font-weight: bold;
           }
@@ -601,6 +603,7 @@
         justify-content: center;
         border-radius: 5px;
         font-size: 20px;
+        margin-top: 5px;
       }
     }
   }

@@ -18,7 +18,7 @@
         <div class="loginBtn" @click="$router.push('/login')">
           登录
         </div>
-        <div class="showTime">
+        <div class="showTime" @click="$router.push({name:'LoginAssessment'})">
           开始评估
         </div>
       </div>
@@ -41,7 +41,7 @@
             name:'首页',
             path:'/'
           }, {
-            name:'咨询全览',
+            name:'资讯全览',
             path:'/news'
           },{
             name:'美好生活',

@@ -4,7 +4,7 @@
       <div class="footHeadWrap">
         <div class="footLeft">
           <ul class="footFirst">
-            <li v-for="item in footList">
+            <li v-for="item,index in footList" :class="{active:index==footNum}" @click="footClick(item)">
               {{item.name}}
             </li>
           </ul>
@@ -20,9 +20,14 @@
             </li>
           </ul>
         </div>
-        <div class="footRight">
-          <img src="../assets/images/home/wechat.png">
-          <img src="../assets/images/home/kf.png">
+        <div class="footLast">
+          <div>
+            <img src="../assets/images/home/wechat.png">
+          </div>
+          <div class="kf">
+            <img src="../assets/images/home/kf_code.png" v-show="kfShow" class="isHide">
+            <img src="../assets/images/home/kf.png" @mouseenter="kfShow = !kfShow" @mouseleave="kfShow =false">
+          </div>
         </div>
       </div>
       <div class="footLastWrap">
@@ -33,28 +38,39 @@
 </template>
 <script>
   export default {
+    props:['nav'],
     data(){
       return {
+        kfShow:false,
+        footNum:null,
         footList:[
           {
-            name:'首页'
+            name:'首页',
+            path:'/'
+          }, {
+            name:'资讯全览',
+            path:'/news'
+          },{
+            name:'美好生活',
+            path:'/life'
+          },{
+            name:'金丰研究所',
+            path:'/research'
           },
           {
-            name:'纵观天下'
-          },
-          {
-            name:'美好生活'
-          },
-          {
-            name:'金丰研究所'
-          },
-          {
-            name:'关于我们'
+            name:'关于我们',
+            path:'/'
           }
         ]
       }
     },
     methods:{
+      footClick(item){
+        this.$router.push(item.path)
+      }
+    },
+    mounted(){
+      this.footNum = this.nav
     }
   }
 </script>
@@ -91,6 +107,9 @@
             li{
               position: relative;
               padding:0 15px;
+              &.active{
+                color: #fff;
+              }
               &:first-child{
                 padding-left: 0;
               }
@@ -123,12 +142,23 @@
             }
           }
         }
-        .footRight{
+        .footLast{
+          display: flex;
           img{
             width: 40px;
             height: 40px;
+            transition: all 0.5s;
             &:last-child{
               margin-left: 15px;
+            }
+          }
+
+          .kf{
+            position: relative;
+            .isHide{
+              position: absolute;
+              left: 15px;
+              top: -40px;
             }
           }
         }

@@ -14,7 +14,7 @@
           </ul>
           <div class="navMainList" v-loading="loading">
             <ul>
-              <li v-for="item in newsList">
+              <li v-for="item in newsList" @click="$router.push({name:'NewsDetail',query:{id:item.id}})">
                 <div class="mainLeft">
                   <img :src="item.img">
                 </div>
@@ -66,7 +66,7 @@
         </div>
       </div>
     </div>
-    <foot-public></foot-public>
+    <foot-public :nav="1"></foot-public>
   </div>
 </template>
 <script>
@@ -101,52 +101,62 @@
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:1
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:2
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:3
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:4
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:5
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:6
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:7
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:8
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:9
           },{
             img: require('../../assets/images/home/news_banner.png'),
             title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
             content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
+            date: '2018-08-17',
+            id:10
           }
         ],
         topList: [
@@ -211,7 +221,7 @@
         setTimeout(()=>{
           self.newsList = self.newsList.concat(self.newsList)
           self.loading = false
-        },500)
+        },1000)
       },
       navClick(item, index) {
         let self = this
@@ -414,6 +424,7 @@
                 justify-content: center;
                 color: #fff;
                 margin-right: 15px;
+                font-size: 14px;
               }
               div{
                 width: calc(~'100% - 33px');
