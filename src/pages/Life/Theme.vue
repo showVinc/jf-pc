@@ -2,20 +2,23 @@
   <div class="life">
     <head-public :nav="2"></head-public>
     <div class="lifeWrap">
-      <div class="lifeBanner">
-        <img src="../../assets/images/life/top_banner.png">
-      </div>
       <ul class="lifeList">
-        <li v-for="item in lifeList" @click="$router.push('/life/theme')">
+        <li v-for="item in list">
           <div class="lifeBg">
             <img :src="item.img">
           </div>
-          <div class="lifeListMain">
+          <div class="iconStyle">
             <img :src="item.icon">
             {{item.name}}
           </div>
+          <div class="lifeListMain">
+            {{item.title}}
+          </div>
         </li>
       </ul>
+      <div class="moreBtn">
+        加载更多
+      </div>
       <div class="news"  v-loading="loading">
         <div class="newsTit">
           <span></span>
@@ -36,9 +39,6 @@
             </div>
           </li>
         </ul>
-        <div class="moreBtn" @click="moreClick">
-          加载更多
-        </div>
       </div>
     </div>
     <foot-public  :nav="2"></foot-public>
@@ -49,23 +49,17 @@
     data(){
       return {
         loading:false,
-        lifeList:[
+        list:[
           {
             name:'便捷跨境',
             icon:require('../../assets/images/life/icon1.png'),
-            img:require('../../assets/images/life/nav1.png')
+            img:require('../../assets/images/life/nav1.png'),
+            title:'测试一下标题'
           },{
             name:'海外投资',
             icon:require('../../assets/images/life/icon2.png'),
-            img:require('../../assets/images/life/nav2.png')
-          },{
-            name:'品质生活',
-            icon:require('../../assets/images/life/icon3.png'),
-            img:require('../../assets/images/life/nav3.png')
-          },{
-            name:'优质教育',
-            icon:require('../../assets/images/life/icon4.png'),
-            img:require('../../assets/images/life/nav4.png')
+            img:require('../../assets/images/life/nav2.png'),
+            title:'测试二下标题'
           }
         ],
         newsList:[
@@ -125,20 +119,20 @@
     flex-direction: column;
     width: 100%;
     .lifeWrap{
-      width: 1140px;
-      .lifeBanner{
-        width: 100%;
-        margin-bottom: 20px;
-      }
+      width: 100%;
+      max-width: 1140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       .lifeList{
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
         width: 100%;
         li{
-          width: calc(~'50% - 10px');
+          width: 100%;
           margin-bottom: 20px;
-          height: 310px;
+          height: 300px;
           position: relative;
           transition: all 0.5s;
           &:hover{
@@ -160,6 +154,19 @@
               transition: all 0.5s;
             }
           }
+          .iconStyle{
+            position: absolute;
+            left: 15px;
+            top:15px;
+            display: flex;
+            align-items: center;
+            color: #fff;
+            font-size: 14px;
+            img{
+              width: 16px;
+              margin-right: 5px;
+            }
+          }
           .lifeListMain{
             position: absolute;
             font-size: 24px;
@@ -172,12 +179,18 @@
             height: 100%;
             left: 0;
             top:0;
-            img{
-              width: 58px;
-              margin-bottom: 15px;
-            }
           }
         }
+      }
+      .moreBtn{
+        width: 100px;
+        height: 38px;
+        border: 1px solid #9d8148;
+        color: #9d8148;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
       }
       .news{
         width: 100%;

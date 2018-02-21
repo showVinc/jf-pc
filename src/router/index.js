@@ -52,6 +52,10 @@ export default new Router({
       path: '/life',
       name: 'Life',
       component: resolve=>require(['@/pages/Life/Index'],resolve)
+    },{
+      path: '/life/theme',
+      name: 'LifeTheme',
+      component: resolve=>require(['@/pages/Life/Theme'],resolve)
     },
     //研究所
     {

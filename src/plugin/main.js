@@ -16,7 +16,7 @@ import axios from 'axios'
 
 
 export default {
-  async asyncFun(url,params,cb) {
+  async getData(url,params,cb) {
     try {
       const value = await axios.get(url,{params:params})
       if(value.data.errcode=='0'){
