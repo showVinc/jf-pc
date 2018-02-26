@@ -1,6 +1,6 @@
 <template>
   <div class="noData">
-    {{$t('noData')}}
+    暂无数据
   </div>
 </template>
 <script>

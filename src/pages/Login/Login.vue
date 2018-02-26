@@ -1,15 +1,15 @@
 <template>
   <div class="login">
-    <head-public :nav="1"></head-public>
+    <head-public></head-public>
     <div class="loginMain">
       <div class="loginTit">
-        {{$t('login')}}
+        登录
       </div>
       <div class="mainWrap">
         <div class="mainLeft">
           <div class="inputShow">
-            <span>{{$t('email')}}</span>
-            <input type="text" v-model="post.email" :class="{'active':isEmail}" ref="inputEmail" @blur="errBlur">
+            <span>用户名</span>
+            <input type="text" v-model="post.tel" :class="{'active':isEmail}" ref="inputEmail" @blur="errBlur">
             <div class="errInfo">
               <transition name="fade">
                 <p v-show="isEmail">{{msg}}</p>
@@ -17,8 +17,8 @@
             </div>
           </div>
           <div class="inputShow">
-            <span>{{$t('password')}}</span>
-            <input type="password" v-model="post.password" :class="{'active':isPassword}" ref="inputPassword" @blur="errBlur">
+            <span>密码</span>
+            <input type="password" v-model="post.password" :class="{'active':isPassword}" ref="inputPassword" @blur="errBlur" @keyup.13="sub">
             <div class="errInfo">
               <transition name="fade">
                 <p v-show="isPassword">{{msg}}</p>
@@ -27,20 +27,20 @@
           </div>
           <div class="isLogin">
             <div @click="sub">
-              {{$t('login')}}
+              密码
             </div>
-            <span @click="$router.push('/login/back')">
-              <img src="../../assets/images/public_img/arrow.png" alt="">
-            {{$t('forgetPassword')}}
-            </span>
+            <!--<span @click="$router.push('/login/back')">-->
+              <!--<img src="../../assets/images/public_img/arrow.png" alt="">-->
+            <!--{{$t('forgetPassword')}}-->
+            <!--</span>-->
           </div>
         </div>
-        <div class="mainRight">
-          <p>{{$t('noAccount')}}</p>
-          <div @click="$router.push('/login/register')">
-            {{$t('goRegister')}}
-          </div>
-        </div>
+        <!--<div class="mainRight">-->
+          <!--<p>{{$t('noAccount')}}</p>-->
+          <!--<div @click="$router.push('/login/register')">-->
+            <!--{{$t('goRegister')}}-->
+          <!--</div>-->
+        <!--</div>-->
       </div>
     </div>
     <foot-public></foot-public>
@@ -57,7 +57,7 @@
         isEmail:false,
         isPassword:false,
         post:{
-          email:'',
+          tel:'',
           password:''
         }
       }
@@ -71,15 +71,11 @@
       sub(){
         let self = this
         self.msg = ''
-        let regEmail = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
-        if(!self.post.email){
-          self.msg = this.$t('noEmail')
+//        let regEmail = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
+        if(!self.post.tel){
+          self.msg = '用户名不能为空！'
           self.isEmail = true
           this.$refs['inputEmail'].focus()
-        }else if(!regEmail.test(self.post.email)){
-          self.msg = this.$t('errEmail')
-          this.$refs['inputEmail'].focus()
-          self.isEmail = true
         }else if(!self.post.password){
           self.msg = this.$t('noPassword')
           self.isPassword = true
@@ -89,14 +85,14 @@
         if(self.msg){
           return false
         }else{
-          self.$http.post(`${process.env.API.API}/user/li`,{email:self.post.email,password:SHA1(self.post.password)}).then(res=>{
+          self.$http.post(`${process.env.API.API}/user/li`,{tel:self.post.tel,password:SHA1(self.post.password)}).then(res=>{
             if(res.data.errcode=='0'){
               self.$notify({
                 message:self.$t('loginSuccess'),
                 type: 'success'
               });
-              localStorage.setItem('authorization',res.data.authorization)
-             self.$router.push({name:'Index',params:{isOne:1}})
+              sessionStorage.setItem('authorization',res.data.authorization)
+              self.$router.push({name:'Index'})
             }else{
               self.$notify({
                 message:res.data.errmsg,

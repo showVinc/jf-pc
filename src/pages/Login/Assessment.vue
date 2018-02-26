@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="num">
-        {{page}}/9
+        {{page}}/{{list&&list.length?list.length:0}}
       </div>
       <span :style="wid"></span>
     </div>
@@ -17,67 +17,24 @@
         <img src="../../assets/images/login/left_arrow.png" @click="$router.push('/')" v-if="page==0">
         <img src="../../assets/images/login/left_arrow.png" @click="upClick" v-if="page!=0">
         <div class="leftWrap">
-          <div class="pageOne" v-if="page==9">
+          <div class="pageOne" v-if="page==list.length">
             基本信息
             <p>我们将使用这些信息来创建您的账户，并告知您的风险承受能理结果;</p>
           </div>
-          <div class="title" v-if="page!=9">
+          <div class="title" v-if="page!=list.length">
             {{title}}
-            <div v-if="page==4">
-              投资A预期获得10%的收益，可能承担的损失非常小；投资B预期获 得30%的收益，但可能承担较大亏损。您会怎么支配您的投资：
-            </div>
           </div>
         </div>
       </div>
       <div class="mainRight">
-        <ul v-show="page==0" class="isRadio">
-          <li v-for="item in page1">
-            <el-radio v-model="post.page1" :label="item.label">{{item.name}}</el-radio>
+        <ul class="isRadio" v-for="item,index in list" v-if="page==index">
+          <li v-for="el in item.selection">
+            <el-radio v-model="post.answer[index]" :label="el.id">{{el.selection}}</el-radio>
           </li>
         </ul>
-        <ul v-show="page==1" class="isRadio">
-          <li v-for="item in page2">
-            <el-radio v-model="post.page2" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==2" class="isRadio">
-          <li v-for="item in page3">
-            <el-radio v-model="post.page3" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==3" class="isRadio">
-          <li v-for="item in page4">
-            <el-radio v-model="post.page4" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==4" class="isRadio">
-          <li v-for="item in page5">
-            <el-radio v-model="post.page5" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==5" class="isRadio">
-          <li v-for="item in page6">
-            <el-radio v-model="post.page6" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==6" class="isRadio">
-          <li v-for="item in page7">
-            <el-radio v-model="post.page7" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==7" class="isRadio">
-          <li v-for="item in page8">
-            <el-radio v-model="post.page8" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==8" class="isRadio">
-          <li v-for="item in page9">
-            <el-radio v-model="post.page9" :label="item.label">{{item.name}}</el-radio>
-          </li>
-        </ul>
-        <ul v-show="page==9" class="user">
+        <ul v-show="page==list.length" class="user">
           <li>
-            <input type="text" placeholder="邮箱/手机号" v-model="post.user">
+            <input type="text" placeholder="邮箱/手机号" v-model="post.tel">
           </li>
           <li>
             <input type="password" placeholder="密码" v-model="post.password">
@@ -92,360 +49,76 @@
   </div>
 </template>
 <script>
-//  import { Notification} from 'element-ui'
+  import SHA1 from '@/plugin/sha1'
   export default {
     data(){
       return {
         page:0,
+        total_pages:'',
         title:'',
         wid:{
           width:''
         },
-        page1:[
-          {
-            label:'1',
-            name:'5万元以下'
-          },{
-            label:'2',
-            name:'5 万元至 20 万元'
-          },{
-            label:'3',
-            name:'20 万元至 50 万元'
-          },{
-            label:'4',
-            name:'50 万元至 100 万元'
-          },{
-            label:'5',
-            name:'100 万元以上'
-          }
-        ],
-        page2:[
-          {
-            label:'1',
-            name:'1 年以下'
-          },{
-            label:'2',
-            name:'1-3 年'
-          },{
-            label:'3',
-            name:'3-5 年'
-          },{
-            label:'4',
-            name:'5-10 年'
-          },{
-            label:'5',
-            name:'10 年以上'
-          }
-        ],
-        page3:[
-          {
-            label:'1',
-            name:'退休期（已退休）'
-          },{
-            label:'2',
-            name:'退休前期（未退休，子女已参加工作）'
-          },{
-            label:'3',
-            name:'家庭成长期（子女出生到完成大学教育）'
-          },{
-            label:'4',
-            name:'家庭形成期（结婚到子女出生前）'
-          },{
-            label:'5',
-            name:'单身期: (独身，无子女)'
-          }
-        ],
-        page4:[
-          {
-            label:'1',
-            name:'平时生活保障，赚点补贴家用'
-          },{
-            label:'2',
-            name:'养老'
-          },{
-            label:'3',
-            name:'子女教育'
-          },{
-            label:'4',
-            name:'资产增值'
-          },{
-            label:'5',
-            name:'家庭富裕'
-          }
-        ],
-        page5:[
-          {
-            label:'1',
-            name:'全部投资于收益较小且风险较小的 A'
-          },{
-            label:'2',
-            name:'同时投资于A和B，但大部分资金投资于收益较小且风险较小的 A'
-          },{
-            label:'3',
-            name:'同时投资于A和B，各投资50%'
-          },{
-            label:'4',
-            name:'同时投资于A和B，但大部分资金投资于收益较大且风险较大的 B'
-          },{
-            label:'5',
-            name:'全部投资于收益较大且风险较大的 B'
-          }
-        ],
-        page6:[
-          {
-            label:'1',
-            name:'除银行储蓄外，没有其他投资'
-          },{
-            label:'2',
-            name:'大部分投资于存款、国债等'
-          },{
-            label:'3',
-            name:'大部分投资于银行理财产品、保险理财产品等'
-          },{
-            label:'4',
-            name:'大部分投资于基金、股票等'
-          },{
-            label:'5',
-            name:'大部分投资于创业板股票、外汇、期货等高风险产品'
-          }
-        ],
-        page7:[
-          {
-            label:'1',
-            name:'不能承受任何损失'
-          },{
-            label:'2',
-            name:'一定的投资损失'
-          },{
-            label:'3',
-            name:'较大的投资损失'
-          },{
-            label:'4',
-            name:'损失可能超过本金'
-          },{
-            label:'5',
-            name:'损失超过本金并接受大于或等于本金的补仓'
-          }
-        ],
-        page8:[
-          {
-            label:'1',
-            name:'收益只有 5%，但不亏损'
-          },{
-            label:'2',
-            name:'收益 15%，但可能亏损 5%'
-          },{
-            label:'3',
-            name:'收益是 30%，但可能亏损 15%'
-          },{
-            label:'4',
-            name:'收益 50%，但可能亏损 30%'
-          },{
-            label:'5',
-            name:'收益 100%，但可能亏损 60%'
-          }
-        ],
-        page9:[
-          {
-            label:'1',
-            name:'清仓, 然后投入到一个波动小的基金中'
-          },{
-            label:'2',
-            name:'卖掉一半'
-          },{
-            label:'3',
-            name:'等着价格反弹再卖掉'
-          },{
-            label:'4',
-            name:'什么都不做(觉得这是正常的)'
-          },{
-            label:'5',
-            name:'补仓'
-          }
-        ],
+        list:[],
         post:{
-          user:'',
+          tel:'',
           password:'',
-          page1:'',
-          page2:'',
-          page3:'',
-          page4:'',
-          page5:'',
-          page6:'',
-          page7:'',
-          page8:'',
-          page9:'',
+          answer:[]
         }
       }
     },
     methods:{
       upClick(){
-        this.page--
-        this.wid.width = `${this.page*11.11}%`
-        switch (this.page){
-          case 0:
-            this.title = '您每年用于投资的金额是多少？'
-            break;
-          case 1:
-            this.title = '您计划中的投资期限是多长？'
-            break;
-          case 2:
-            this.title = '您目前的人生阶段：'
-            break;
-          case 3:
-            this.title = '您用于投资的资产主要用于什么目的：'
-            break;
-          case 4:
-            this.title = '假设有两种投资：'
-            break;
-          case 5:
-            this.title = '您的投资经验如何？'
-            break;
-          case 6:
-            this.title = '您认为自己能承受的最大投资损失是多少'
-            break;
-          case 7:
-            this.title = '以下几种投资模式，您更偏好哪种模式：'
-            break;
-          case 8:
-            this.title = '(短期风险承受能力)假设你投资的股票在一个星期中亏了20%, 你会怎么办? '
-            break;
-
-        }
+        let self =this
+        self.page--
+        self.wid.width = `${self.page*(100/self.list.length)}%`
+        self.title = self.list[self.page].title
       },
       topShow(){
-        switch (this.page){
-          case 0:
-            if(!this.post.page1){
+        let self = this
+        if(self.page==self.list.length){
+          if(!self.post.tel||!self.post.password){
+            this.$notify({
+              title: '警告',
+              message: '请填写信息',
+              type: 'warning'
+            });
+            return false
+          }
+          self.$fun.post(`${process.env.API.API}/qunn/ques`,{tel:self.post.tel,password:SHA1(self.post.password),answer:self.post.answer},res=>{
+            if(res.errcode=='0'){
               this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
+                title: '提示',
+                message: '提交成功',
+                type: 'success'
               });
+              self.$router.push('/')
               return false
             }
-            this.title = '您计划中的投资期限是多长？'
-            break;
-          case 1:
-            if(!this.post.page2){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '您目前的人生阶段：'
-            break;
-          case 2:
-            if(!this.post.page3){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '您用于投资的资产主要用于什么目的：'
-            break;
-          case 3:
-            if(!this.post.page4){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '假设有两种投资：'
-            break;
-          case 4:
-            if(!this.post.page5){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '您的投资经验如何？'
-            break;
-          case 5:
-            if(!this.post.page6){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '您认为自己能承受的最大投资损失是多少'
-            break;
-          case 6:
-            if(!this.post.page7){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '以下几种投资模式，您更偏好哪种模式：'
-            break;
-          case 7:
-            if(!this.post.page8){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            this.title = '(短期风险承受能力)假设你投资的股票在一个星期中亏了20%, 你会怎么办? '
-            break;
-          case 8:
-            if(!this.post.page9){
-              this.$notify({
-                title: '警告',
-                message: '请至少选择一个选项',
-                type: 'warning'
-              });
-              return false
-            }
-            break;
-          case 9:
-            if(!this.post.user){
-              this.$notify({
-                title: '警告',
-                message: '用户名不能为空',
-                type: 'warning'
-              });
-              return false
-            }else if(!this.post.password){
-              this.$notify({
-                title: '警告',
-                message: '密码不能为空',
-                type: 'warning'
-              });
-              return false
-            }
-            break;
-        }
-        if(this.page<9){
-          this.page++
-          this.wid.width = `${this.page*11.11}%`
+          })
+          return false
         }else{
-          this.$notify({
-            title: '成功',
-            message: '提交成功',
-            type: 'success'
-          });
+          if(!self.post.answer[self.page]){
+            this.$notify({
+              title: '警告',
+              message: '请至少选择一个选项',
+              type: 'warning'
+            });
+            return false
+          }
         }
+        self.page++
+        self.wid.width = `${self.page*(100/self.list.length)}%`
+        self.title = self.page!=self.list.length?self.list[self.page].title:''
       }
     },
     mounted(){
-      this.title = '您每年用于投资的金额是多少？'
-      this.wid.width = `${this.page*11.11}%`
+      let self = this
+      self.$fun.get(`${process.env.API.API}/qunn/ques`,{rows:100},res=>{
+        self.list = res.data
+        self.title = res.data[0].title
+        self.wid.width = `${self.page*(100/self.list.length)}%`
+      })
     }
   }
 </script>

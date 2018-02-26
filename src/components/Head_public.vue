@@ -6,7 +6,10 @@
           <img src="../assets/images/public_img/logo.png" @click="$router.push('/')">
         </div>
         <ul class="topNav">
-          <li v-for="item,index in navList" :class="{active:index==navNum}" @click="topClick(item)">
+          <li :class="{active:navNum==0}" @click="$router.push('/')">
+            首页
+          </li>
+          <li v-for="item,index in navList" :class="{active:(index+1)==navNum}" @click="topClick(item)">
             {{item.name}}
           </li>
         </ul>
@@ -15,10 +18,18 @@
         <div class="topSearch">
           <img src="../assets/images/public_img/search.png">
         </div>
-        <div class="loginBtn" @click="$router.push('/login')">
+        <div v-if="uid" class="user">
+          <el-dropdown :hide-on-click="false"  @command="logout">
+            <img src="../assets/images/public_img/user.jpg">
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="a">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+        <div class="loginBtn" @click="$router.push('/login')" v-if="!uid">
           登录
         </div>
-        <div class="showTime" @click="$router.push({name:'LoginAssessment'})">
+        <div class="showTime" @click="$router.push({name:'LoginAssessment'})" v-if="!uid">
           开始评估
         </div>
       </div>
@@ -36,21 +47,7 @@
         isLogin:false,
         uid:'',
         navNum:null,
-        navList:[
-          {
-            name:'首页',
-            path:'/'
-          }, {
-            name:'资讯全览',
-            path:'/news'
-          },{
-            name:'美好生活',
-            path:'/life'
-          },{
-            name:'金丰研究所',
-            path:'/research'
-          }
-        ],
+        navList:[],
         userList: [{
           value: 'user',
           label: this.$t('personalCenter')
@@ -64,6 +61,15 @@
       }
     },
     methods:{
+      logout(command) {
+        this.$fun.get(`${process.env.API.API}/user/lo`,{},res=>{
+         console.log(res)
+          if(res.errcode=='0'){
+            sessionStorage.removeItem('authorization')
+            this.$router.push('/login')
+          }
+        })
+      },
       langChange(){
         for(let value of this.options){
           if(value.value == this.value){
@@ -93,7 +99,7 @@
         }
       },
       topClick(item){
-        this.$router.push(item.path)
+        this.$router.push({path:item.url,query:{id:item.code}})
         document.title = item.name
       },
       isUser(){
@@ -101,24 +107,21 @@
       }
     },
     created(){
-
+      let self = this
+      let nav = sessionStorage.getItem('navList')
+      if(nav){
+        self.navList = JSON.parse(nav)
+      }else{
+        self.$fun.get(`${process.env.API.API}/news/arc`,{},res=>{
+          self.navList = res.data
+          sessionStorage.setItem('navList',JSON.stringify(res.data))
+        })
+      }
     },
     mounted(){
-      this.uid = localStorage.getItem('authorization')
+      this.uid = sessionStorage.getItem('authorization')
       let self = this
       self.navNum = this.nav
-      setTimeout(()=>{
-        self.userInfo = self.$store.state.userInfo
-      },300)
-
-      let lang = localStorage.getItem('lang')
-      if(lang){
-        for(let value of self.options){
-          if(lang==value.value){
-            self.langName = value.label
-          }
-        }
-      }
     }
   }
 </script>
@@ -154,6 +157,7 @@
             align-items: center;
             justify-content: center;
             margin-right: 30px;
+            box-sizing: content-box;
             &.active{
               border-bottom: 2px solid #fff;
             }
@@ -166,8 +170,6 @@
       .headRight{
         display: flex;
         align-items: center;
-        font-size: 14px;
-        color: #212125;
         min-height: 33px;
         font-size: 16px;
         color: #fff;
@@ -196,6 +198,21 @@
           align-items: center;
           margin: 0 25px;
         }
+        .user{
+          margin: 0 25px;
+          display: flex;
+          align-items: center;
+          position: relative;
+          img{
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
+          .user{
+            display: flex;
+            align-items: center;
+          }
+        }
         .showTime{
           min-width: 120px;
           background: #9d8148;
@@ -210,4 +227,11 @@
   }
 </style>
 <style lang="less" type="text/less">
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
+  .el-dropdown-menu{
+    min-width: 60px!important;
+    font-size: 14px;
+  }
 </style>

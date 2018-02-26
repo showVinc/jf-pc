@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '@/plugin/axios'
 
 // const getRepoData = (url,params) => {
 //   return new Promise((resolve, reject) => {
@@ -16,9 +16,31 @@ import axios from 'axios'
 
 
 export default {
-  async getData(url,params,cb) {
+  async get(url,params,cb) {
     try {
       const value = await axios.get(url,{params:params})
+      if(value.data.errcode=='0'){
+        cb(value.data)
+      }
+      return value;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  async post(url,data,cb) {
+    try {
+      const value = await axios.post(url,data)
+      if(value.data.errcode=='0'){
+        cb(value.data)
+      }
+      return value;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  async delete(url,params,cb) {
+    try {
+      const value = await axios.delete(url,{params:params})
       if(value.data.errcode=='0'){
         cb(value.data)
       }

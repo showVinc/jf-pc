@@ -20,29 +20,66 @@
     <div class="data">
       <div class="dataWrap">
         行情数据：
-        <ul class="data">
-          <li v-for="item in dataList">
-            {{item.name}}
-            <p>
-              {{item.price}}
-              <span>{{item.isRise==1?'+':'-'}}{{item.num}}</span>
-            </p>
-          </li>
-        </ul>
+        <vue-seamless-scroll :data="dataList" class="seamless-warp" :class-option="classOption" v-if="dataShow">
+          <ul class="data">
+            <li v-for="item in dataList">
+              {{item.name}}
+              <p>{{item.stock}}<span>{{item.percent}}</span></p>
+            </li>
+          </ul>
+        </vue-seamless-scroll>
       </div>
     </div>
     <div class="publicMain">
+      <div class="category" v-if="uid">
+        <div class="categoryHead">
+            <span>
+              我的风险类型
+            </span>
+          <p @click="$router.push({name:'LoginAssessment'})">更改风险测试>></p>
+        </div>
+        <div class="categoryMain">
+          <div class="mainLeft">
+            <el-progress type="circle" :percentage="scoreInfo.score" :show-text="false" :width="192" :stroke-width="15">
+            </el-progress>
+            <span>
+              {{scoreInfo.score}}
+            </span>
+          </div>
+          <div class="mainRight">
+            <div class="tit">
+              {{scoreInfo.title}}
+            </div>
+            <div class="main">
+              <ul>
+                <li v-for="item in scoreInfo.star">
+                  <span>{{item.name}}</span><el-rate v-model="item.value" disabled></el-rate>
+                </li>
+              </ul>
+              <p>
+                {{scoreInfo.description}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="selected">
-        <div class="selectedTitle">
+        <div class="selectedTitle" v-if="!uid">
           金丰精选TOP10
           <p>Jin feng selected TOP10</p>
         </div>
+        <div class="selectedHead" v-if="uid">
+          <span>
+            我的精选TOP10
+          </span>
+        </div>
         <div class="selectedMain">
+          <no-more v-if="topList.length<=0"></no-more>
           <ul class="topHeadList">
-            <li v-for="item,index in topList.list" v-if="index<3">
+            <li v-for="item,index in topList" v-if="index<3" @click="openDetail(item)">
               <div class="topHeadImg">
                 <div>
-                  <img :src="item.img">
+                  <img :src="item.cover_pic">
                 </div>
                 <p>
                   TOP {{index+1}}
@@ -50,21 +87,22 @@
               </div>
               <div class="topMain">
                 <div class="mainFirst">
-                  <span>{{item.label}}</span>
+                  <span>精选</span>
                   <div>
                     <p>{{item.title}}</p>
-                    <span>{{item.content}}</span>
+                    <span>{{item.summary}}</span>
                   </div>
                 </div>
                 <div class="mainFoo">
-                  {{item.date}}
+                  {{item.publish_time}}
                 </div>
               </div>
             </li>
           </ul>
           <div class="topFooWrap">
+            <no-more v-if="topList.length<2"></no-more>
             <ul class="topFooList">
-              <li v-for="item,index in topList.list" v-if="index>2">
+              <li v-for="item,index in topList" v-if="index>2" @click="openDetail(item)">
                 <div class="num">
                   <span>
                    {{index+1}}
@@ -73,12 +111,12 @@
                 <div class="content">
                   <div>
                     <div>{{item.title}}</div>
-                    <p>{{item.content}}</p>
+                    <p>{{item.summary}}</p>
                   </div>
-                  <span>{{item.date}}</span>
+                  <span>{{item.publish_time}}</span>
                 </div>
                 <div class="imgRight">
-                  <img :src="item.img" alt="">
+                  <img :src="item.cover_pic">
                 </div>
               </li>
             </ul>
@@ -113,109 +151,18 @@
     data() {
       return {
         loading:false,
+        dataShow:false,
         userInfo:{},
+        uid:'',
+        scoreInfo:{},
         headTop:{
           position: 'fixed',
           top: 0,
           left: 0,
           'z-index':999
         },
-        dataList:[
-          {
-            name:'上证指数',
-            price:3558.13,
-            num:'0.28%',
-            isRise:1
-          }, {
-            name:'深证指数',
-            price:3558.13,
-            num:'0.28%',
-            isRise:2
-          },{
-            name:'恒生指数',
-            price:3558.13,
-            num:'0.28%'
-          },{
-            name:'道琼斯指数',
-            price:3558.13,
-            num:'0.28%',
-            isRise:1
-          },{
-            name:'纳斯达克',
-            price:3558.13,
-            num:'0.28%',
-            isRise:1
-          }
-        ],
-        topList:{
-          list:[
-            {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }, {
-              img:require('../assets/images/home/news_banner.png'),
-              label:'精选',
-              title:'2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-              content:'卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-              date:'2018-08-17'
-            }
-          ],
-          page:{
-            p:1,
-            total_pages:1
-          }
-        },
+        dataList:[],
+        topList:[],
         footList:[
           {
             img:require('../assets/images/foot/foot1.png')
@@ -239,9 +186,37 @@
         ]
       }
     },
+    computed: {
+      classOption: function () {
+        return {
+          step: 1, //步长 越大滚动速度越快
+          limitMoveNum: 5, //启动无缝滚动最小数据量 this.dataList.length
+          hoverStop: true, //是否启用鼠标hover控制
+          direction: 2, //1 往上 0 往下
+          openWatch: true, //开启data实时监听
+          singleHeight: 0, //单条数据高度有值hoverStop关闭
+          waitTime: 1000 //单步停止等待时间
+        }
+      },
+      options () {
+        // 合并参数
+        return Object.assign({}, this.defaultOption, this.classOption)
+      },
+      moveSwitch () {
+        //判断传入的初始滚动值和data的length来控制是否滚动
+        return this.dataList.length < this.options.limitMoveNum
+      }
+    },
     methods: {
-      brandClick(item){
-        this.$router.push({name:'Brand',query:{id:item.id}})
+      scroll(){
+        let self = this
+        this.animate=true;    // 因为在消息向上滚动的时候需要添加css3过渡动画，所以这里需要设置true
+        setTimeout(()=>{      //  这里直接使用了es6的箭头函数，省去了处理this指向偏移问题，代码也比之前简化了很多
+          this.animate=false;  // margin-top 为0 的时候取消过渡动画，实现无缝滚动
+        },500)
+      },
+      openDetail(item){
+        this.$router.push({path:'/news/detail',query:{aid:item.aid}})
       },
       moreBtn(){
         let self = this
@@ -255,38 +230,44 @@
     created() {
       let self = this
       window.scrollTo(0,0)
+      self.$fun.get(`${process.env.API.API}/sto`,{rows:100},res=>{
+        for(let i=0;i<99;i++){
+          self.dataList = self.dataList.concat(res.data)
+        }
+        self.dataShow = true
+      })
       setTimeout(()=>{
         self.userInfo = self.$store.state.userInfo
       },300)
     },
     mounted(){
       let self = this
-      if(this.$route.params&&this.$route.params.isOne==1){
-        location.reload()
+      setInterval(this.scroll,1000)
+      self.uid = sessionStorage.getItem('authorization')
+      if(self.uid){
+        self.$fun.get(`${process.env.API.API}/qunn/res`,{},res=>{
+          self.scoreInfo = res.data
+        })
       }
-//      self.$http.get(`${process.env.API.API}/ad/index`).then(res=>{
-//        if(res.data.errcode=='0'){
-//          self.bannerInfo.list = res.data.data
-//          self.bannerInfo.page = res.data.page
-//        }
-//      }).catch(err=>{
-//        console.log(err)
-//      })
-//
-//      self.$http.get(`${process.env.API.API}/dict/brand`,{params:{rows:20,p:1}}).then(res=>{
-//        if(res.data.errcode=='0'){
-//          self.lists.list = res.data.data
-//          self.lists.page = res.data.page
-//        }
-//      }).catch(err=>{
-//        console.log(err)
-//      })
+
+      self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:10},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.topList = res.data
+      })
     },
     //获取底部组件
     components: {}
   }
 </script>
 <style lang="less" scoped type="text/less">
+  .seamless-warp {
+    max-width: 1000px;
+    height: 40px;
+    overflow: hidden;
+  }
+
   .data{
     color: #333;
     font-size: 14px;
@@ -318,7 +299,92 @@
     }
   }
   .publicMain{
-    padding: 50px 0;
+    padding:35px 0;
+    .category{
+      width: 100%;
+      max-width: 1140px;
+      margin-bottom: 40px;
+      .categoryHead{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        margin-bottom: 10px;
+        &:before{
+          width: 5px;
+          height: 20px;
+          position: absolute;
+          content: '';
+          background: #9d8148;
+          left: 0;
+          top: calc(~'50% - 10px');
+        }
+        span{
+          color: #000;
+          font-size: 17px;
+          padding-left: 15px;
+          box-sizing: border-box;
+          position: relative;
+          &:before{
+            width: 2px;
+            height: 20px;
+            position: absolute;
+            content: '';
+            background: #9d8148;
+            left: 6px;
+            top: calc(~'50% - 10px');
+          }
+        }
+        p{
+          font-size: 13px;
+          color: #9d8148;
+        }
+      }
+      .categoryMain{
+        display: flex;
+        align-items: center;
+        width: 100%;
+        .mainLeft{
+          padding: 15px;
+          border-radius: 50%;
+          font-size: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          span{
+            position: absolute;
+          }
+        }
+        .mainRight{
+          width: calc(~'100% - 222px');
+          padding-left: 15px;
+          box-sizing: border-box;
+          .tit{
+            font-size: 29px;
+            color: #9d8148;
+          }
+          .main{
+            ul{
+              margin: 20px 0;
+              display: flex;
+              li{
+                display: flex;
+                align-items: center;
+                width: 25%;
+                span{
+                  margin-right: 10px;
+                }
+              }
+            }
+            p{
+              font-size: 15px;
+              color: #333;
+            }
+          }
+        }
+      }
+    }
     .selected{
       width: 100%;
       max-width: 1140px;
@@ -334,6 +400,38 @@
           font-size: 24px;
           color: #999;
           margin: 10px 0 60px;
+        }
+      }
+      .selectedHead{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        margin-bottom: 25px;
+        &:before{
+          width: 5px;
+          height: 20px;
+          position: absolute;
+          content: '';
+          background: #9d8148;
+          left: 0;
+          top: calc(~'50% - 10px');
+        }
+        span{
+          color: #000;
+          font-size: 17px;
+          padding-left: 15px;
+          box-sizing: border-box;
+          position: relative;
+          &:before{
+            width: 2px;
+            height: 20px;
+            position: absolute;
+            content: '';
+            background: #9d8148;
+            left: 6px;
+            top: calc(~'50% - 10px');
+          }
         }
       }
       .selectedMain{
@@ -441,10 +539,13 @@
           .topFooList{
             display: flex;
             flex-direction: column;
+            width: 100%;
             li{
               display: flex;
               padding: 30px 120px 23px;
               transition: all 0.5s;
+              width: 100%;
+              box-sizing: border-box;
               &:hover{
                 background: #f5f2ec;
                 .imgRight{

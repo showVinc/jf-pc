@@ -6,12 +6,12 @@
         <img src="../../assets/images/life/top_banner.png">
       </div>
       <ul class="lifeList">
-        <li v-for="item in lifeList" @click="$router.push('/life/theme')">
+        <li v-for="item in navList" @click="$router.push({path:'/life/theme',query:{id:item.code}})">
           <div class="lifeBg">
-            <img :src="item.img">
+            <img :src="item.cover_pic">
           </div>
           <div class="lifeListMain">
-            <img :src="item.icon">
+            <img :src="item.icon_pic">
             {{item.name}}
           </div>
         </li>
@@ -22,21 +22,21 @@
           相关资讯
         </div>
         <ul class="newsList">
-          <li v-for="item in newsList">
+          <li v-for="item in newsList" @click="openDetail(item)">
             <div class="newsImg">
-              <img :src="item.img" alt="">
+              <img :src="item.cover_pic">
             </div>
             <div class="newsMain">
               <div>
                 {{item.title}}
               </div>
               <span>
-              {{item.date}}
+              {{item.publish_time}}
             </span>
             </div>
           </li>
         </ul>
-        <div class="moreBtn" @click="moreClick">
+        <div class="moreBtn" @click="moreClick" v-if="page.p<page.total_pages">
           加载更多
         </div>
       </div>
@@ -49,71 +49,47 @@
     data(){
       return {
         loading:false,
-        lifeList:[
-          {
-            name:'便捷跨境',
-            icon:require('../../assets/images/life/icon1.png'),
-            img:require('../../assets/images/life/nav1.png')
-          },{
-            name:'海外投资',
-            icon:require('../../assets/images/life/icon2.png'),
-            img:require('../../assets/images/life/nav2.png')
-          },{
-            name:'品质生活',
-            icon:require('../../assets/images/life/icon3.png'),
-            img:require('../../assets/images/life/nav3.png')
-          },{
-            name:'优质教育',
-            icon:require('../../assets/images/life/icon4.png'),
-            img:require('../../assets/images/life/nav4.png')
-          }
-        ],
-        newsList:[
-          {
-            title:'展望2019放撒开绿灯就撒啊设计的婚纱的哈斯卡混沌斯卡迪哈斯卡的开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          }, {
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          }
-        ]
+        navList:[],
+        newsList:[],
+        page:{
+          p:1,
+          total_pages:1
+        }
       }
     },
     methods:{
+      openDetail(item){
+        this.$router.push({path:'/news/detail',query:{aid:item.aid}})
+      },
       moreClick(){
-        let self = this
+        self = this
         self.loading = true
+        self.page.p++
         setTimeout(()=>{
-          self.newsList = self.newsList.concat(self.newsList)
           self.loading = false
-        },500)
+          self.$fun.get(`${process.env.API.API}/news/relate`,{rows:8,p:self.page.p,code:self.$route.query.id},res=>{
+            for(let v of res.data){
+              v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+            }
+            self.newsList = self.newsList.concat(res.data)
+            self.page = res.page
+          })
+        },600)
       }
+    },
+    mounted(){
+      let self = this
+      self.$fun.get(`${process.env.API.API}/news/arc`,{code:self.$route.query.id,rows:10},res=>{
+        self.navList = res.data[0].sons
+      })
+
+      self.$fun.get(`${process.env.API.API}/news/relate`,{rows:8,p:1,code:self.$route.query.id},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.newsList = res.data
+        self.page = res.page
+      })
     }
   }
 </script>
@@ -125,7 +101,8 @@
     flex-direction: column;
     width: 100%;
     .lifeWrap{
-      width: 1140px;
+      max-width: 1140px;
+      width: 100%;
       .lifeBanner{
         width: 100%;
         margin-bottom: 20px;
@@ -224,6 +201,7 @@
           display: flex;
           flex-wrap: wrap;
           margin-bottom: 40px;
+          width: 100%;
           li{
             width: calc(~'25% - 15px');
             margin:0 20px 20px 0;

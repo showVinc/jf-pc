@@ -1,21 +1,20 @@
 <template>
   <div class="life">
-    <head-public :nav="2"></head-public>
+    <head-public :nav="1"></head-public>
     <div class="lifeWrap">
       <div class="newsDetailWrap">
         <div class="title">
           {{newsInfo.title}}
         </div>
         <div class="date">
-          <span>{{newsInfo.date}}</span>
-          <div class="star">
-            <div>
-              收藏
-            </div>
-          </div>
+          <span>{{newsInfo.publish_time}}</span>
+          <!--<div class="star">-->
+            <!--<div>-->
+              <!--收藏-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
         <div class="main" v-html="newsInfo.content">
-
         </div>
       </div>
       <div class="news">
@@ -24,16 +23,16 @@
           您可能感兴趣的文章
         </div>
         <ul class="newsList">
-          <li v-for="item in newsList">
+          <li v-for="item in newsList" @click="openDetail(item)">
             <div class="newsImg">
-              <img :src="item.img" alt="">
+              <img :src="item.cover_pic" alt="">
             </div>
             <div class="newsMain">
               <div>
                 {{item.title}}
               </div>
               <span>
-              {{item.date}}
+              {{item.publish_time}}
             </span>
             </div>
           </li>
@@ -47,50 +46,38 @@
   export default {
     data(){
       return {
-        newsInfo:{
-          content:'测阿斯加德哈手机宽带哈手机宽带哈数据的哈吉斯的高仿黄金时代个环境第三方更多数据锋哥是带红酒是的话凡哥说的黄金分割山东黄金凡哥说的黄金分割山东黄金闪电发货公司电话金丰定个时间凡哥说的返回结果闪电发货申达股份黄金时代高仿黄金时代国防建设试',
-          title:'测试标题',
-          date:'2018-02-07'
-        },
-        newsList:[
-          {
-            title:'展望2019放撒开绿灯就撒啊设计的婚纱的哈斯卡混沌斯卡迪哈斯卡的开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          }, {
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          }
-        ]
+        newsInfo:{},
+        newsList:[]
       }
     },
     methods:{
-
+      openDetail(item){
+        this.$router.push({path:'/news/detail',query:{aid:item.aid}})
+      },
+      refresh(){
+        let self = this
+        self.$fun.get(`${process.env.API.API}/news/info`,{aid:self.$route.query.aid},res=>{
+          res.data.publish_time = self.$moment(res.data.publish_time*1000).format('YYYY-MM-DD')
+          self.newsInfo = res.data
+        })
+      }
+    },
+    mounted(){
+      let self = this
+      self.$fun.get(`${process.env.API.API}/news/info`,{aid:self.$route.query.aid},res=>{
+        res.data.publish_time = self.$moment(res.data.publish_time*1000).format('YYYY-MM-DD')
+        self.newsInfo = res.data
+      })
+      self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:8},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.newsList = res.data
+      })
+    },
+    watch: {
+      // 如果路由有变化，会再次执行该方法
+      "$route": "refresh"
     }
   }
 </script>

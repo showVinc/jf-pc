@@ -21,8 +21,9 @@
           </ul>
         </div>
         <div class="footLast">
-          <div>
-            <img src="../assets/images/home/wechat.png">
+          <div class="kf">
+            <img src="../assets/images/home/wx_code.png" v-show="wxShow" class="isHide">
+            <img src="../assets/images/home/wechat.png" @mouseenter="wxShow = !wxShow" @mouseleave="wxShow =false">
           </div>
           <div class="kf">
             <img src="../assets/images/home/kf_code.png" v-show="kfShow" class="isHide">
@@ -42,6 +43,7 @@
     data(){
       return {
         kfShow:false,
+        wxShow:false,
         footNum:null,
         footList:[
           {
@@ -157,8 +159,10 @@
             position: relative;
             .isHide{
               position: absolute;
-              left: 15px;
-              top: -40px;
+              width: 80px;
+              height: 85px;
+              left: -5px;
+              top: -90px;
             }
           }
         }

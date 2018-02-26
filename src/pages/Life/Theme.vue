@@ -2,21 +2,22 @@
   <div class="life">
     <head-public :nav="2"></head-public>
     <div class="lifeWrap">
+      <no-more v-if="list.length<=0"></no-more>
       <ul class="lifeList">
-        <li v-for="item in list">
+        <li v-for="item,index in list" @click="detailClick(item,index)">
           <div class="lifeBg">
-            <img :src="item.img">
+            <img :src="item.cover_pic">
           </div>
           <div class="iconStyle">
-            <img :src="item.icon">
-            {{item.name}}
+            <img :src="item.category_icon_pic">
+            {{item.category_name}}
           </div>
           <div class="lifeListMain">
             {{item.title}}
           </div>
         </li>
       </ul>
-      <div class="moreBtn">
+      <div class="moreBtn" v-if="page.p<page.total_pages">
         加载更多
       </div>
       <div class="news"  v-loading="loading">
@@ -24,6 +25,7 @@
           <span></span>
           相关资讯
         </div>
+        <no-more v-if="newsList.length<=0"></no-more>
         <ul class="newsList">
           <li v-for="item in newsList">
             <div class="newsImg">
@@ -41,6 +43,13 @@
         </ul>
       </div>
     </div>
+    <el-dialog
+      title=""
+      :visible.sync="detailShow"
+      width="100%"
+      center>
+      <div v-html="list.length>0?list[num].content:''"></div>
+    </el-dialog>
     <foot-public  :nav="2"></foot-public>
   </div>
 </template>
@@ -49,57 +58,21 @@
     data(){
       return {
         loading:false,
-        list:[
-          {
-            name:'便捷跨境',
-            icon:require('../../assets/images/life/icon1.png'),
-            img:require('../../assets/images/life/nav1.png'),
-            title:'测试一下标题'
-          },{
-            name:'海外投资',
-            icon:require('../../assets/images/life/icon2.png'),
-            img:require('../../assets/images/life/nav2.png'),
-            title:'测试二下标题'
-          }
-        ],
-        newsList:[
-          {
-            title:'展望2019放撒开绿灯就撒啊设计的婚纱的哈斯卡混沌斯卡迪哈斯卡的开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          }, {
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          },{
-            title:'展望2019放撒开绿灯就撒开了都结束了卡德加撒赖扩大',
-            img:require('../../assets/images/home/news_banner.png'),
-            date:'2018-07-18'
-          }
-        ]
+        detailShow:false,
+        num:0,
+        list:[],
+        page:{
+          p:1,
+          total_pages:1
+        },
+        newsList:[]
       }
     },
     methods:{
+      detailClick(item,index){
+        this.num = index
+        this.detailShow = true
+      },
       moreClick(){
         let self = this
         self.loading = true
@@ -108,6 +81,16 @@
           self.loading = false
         },500)
       }
+    },
+    mounted(){
+      let self = this
+      self.$fun.get(`${process.env.API.API}/news/list`,{rows:10,p:1,code:self.$route.query.id},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.list = res.data
+        self.page = res.page
+      })
     }
   }
 </script>
@@ -298,6 +281,16 @@
           justify-content: center;
           border-radius: 5px;
         }
+      }
+    }
+  }
+</style>
+<style lang="less" type="text/less">
+  .life{
+    .el-dialog--small{
+      width: 60%!important;
+      img{
+        width: 100%!important;
       }
     }
   }

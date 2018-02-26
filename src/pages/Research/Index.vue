@@ -6,15 +6,16 @@
         <img src="../../assets/images/research/top_banner.png">
       </div>
       <div class="newsMainWrap">
-        <div class="newsMainLeft">
+        <div class="newsMainLeft"  v-loading="loading">
           <ul class="navTopStyle">
             <li v-for="item,index in navList" :class="{'active':navNum==index}" @click="navClick(item,index)">
               {{item.name}}
             </li>
           </ul>
-          <div class="navMainList" v-loading="loading">
+          <div class="navMainList">
+            <no-more v-if="researchList.length<=0"></no-more>
             <ul>
-              <li v-for="item in researchList">
+              <li v-for="item in researchList" @click="openDetail(item)">
                 <div class="mainLeft">
                   <img src="../../assets/images/research/message.png">
                 </div>
@@ -24,16 +25,16 @@
                       {{item.title}}
                     </div>
                     <p>
-                      {{item.content}}
+                      {{item.summary}}
                     </p>
                   </div>
                   <span>
-                    {{item.date}}
+                    {{item.publish_time}}
                   </span>
                 </div>
               </li>
             </ul>
-            <div class="moreBtn" @click="moreClick">
+            <div class="moreBtn" @click="moreClick" v-if="page.p<page.total_pages">
               加载更多
             </div>
           </div>
@@ -44,9 +45,9 @@
               金丰精选TOP 10
             </div>
             <ul class="newsRightFirst">
-              <li v-for="item,index in topList" v-if="index<3">
+              <li v-for="item,index in topList" v-if="index<3" @click="openDetail(item)">
                 <div class="imgBg">
-                  <img :src="item.img">
+                  <img :src="item.cover_pic">
                 </div>
                 <div>
                   {{item.title}}
@@ -57,7 +58,7 @@
               </li>
             </ul>
             <ul class="newsRightLast">
-              <li v-for="item,index in topList" v-if="index>2">
+              <li v-for="item,index in topList" v-if="index>2" @click="openDetail(item)">
                 <span>{{index+1}}</span>
                 <div>{{item.title}}</div>
               </li>
@@ -75,152 +76,75 @@
       return {
         navNum: 0,
         loading:false,
-        navList: [
-          {
-            name: '股票'
-          }, {
-            name: '债券'
-          }, {
-            name: '外汇'
-          }, {
-            name: '基金'
-          }, {
-            name: '银行'
-          }, {
-            name: '私募'
-          }, {
-            name: '金融科技'
-          }
-        ],
-        researchList: [
-          {
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          }
-        ],
-        topList: [
-          {
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          },{
-            img: require('../../assets/images/home/news_banner.png'),
-            title: '2018展望未来你测试一下标题长度爱神的箭爱神的箭阿是的话就开始猜猜咯，陷入账单支付宝做错了什么',
-            content: '卡说的就是克拉的骄傲上课了多喝水兼爱非攻hi128423季后赛的尽快发货大数据库复合大师复',
-            date: '2018-08-17'
-          }
-        ]
+        page:{
+          p:1,
+          total_pages:1
+        },
+        navList: [],
+        researchList: [],
+        topList: []
       }
     },
     methods: {
+      openDetail(item){
+        this.$router.push({path:'/news/detail',query:{aid:item.aid}})
+      },
       moreClick(){
         self = this
         self.loading = true
+        self.page.p++
         setTimeout(()=>{
-          self.researchList = self.researchList.concat(self.researchList)
           self.loading = false
-        },1000)
+          self.$fun.get(`${process.env.API.API}/news/list`,{rows:10,p:self.page.p,code:self.navList[self.navNum].code},res=>{
+            for(let v of res.data){
+              v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+            }
+            self.researchList = self.researchList.concat(res.data)
+            self.page = res.page
+          })
+        },600)
       },
       navClick(item, index) {
         let self = this
-        if (self.navNum == index) {
+        if (self.navNum == index||self.loading) {
           return false
         }
+        self.loading = true
         self.navNum = index
+        self.page.p = 1
+        self.researchList = []
+        self.$fun.get(`${process.env.API.API}/news/list`,{rows:10,p:self.page.p,code:item.code},res=>{
+          self.researchList = res.data
+          self.page = res.page
+        })
+        setTimeout(()=>{
+          self.loading = false
+        },600)
       }
     },
     mounted() {
-//      this.$fun.asyncFun('http://localhost:8080/hh', {}, (res) => {
-//        console.log(res)
-//      })
+      let self = this
+      self.loading = true
+      self.$fun.get(`${process.env.API.API}/news/arc`,{code:self.$route.query.id,rows:10},res=>{
+        self.navList = res.data[0].sons
+      })
+
+      self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:10},res=>{
+        self.topList = res.data
+      })
+
+
+      self.$fun.get(`${process.env.API.API}/news/list`,{rows:10,p:1,code:self.$route.query.id},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.researchList = res.data
+        self.page = res.page
+      })
+
+      setTimeout(()=>{
+        self.loading = false
+      },600)
     }
   }
 </script>

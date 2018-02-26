@@ -15,6 +15,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import UserComponent from '@/components/index'
 
+
+import scroll from 'vue-seamless-scroll'
+Vue.use(scroll)
+
 Vue.use(UserComponent)
 
 //引用element上传组件
