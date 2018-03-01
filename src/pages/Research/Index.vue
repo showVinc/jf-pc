@@ -181,6 +181,7 @@
           flex-direction: column;
           align-items: center;
           width: 100%;
+          margin-bottom: 30px;
           ul{
             width: 100%;
             li{

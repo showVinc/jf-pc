@@ -1,30 +1,22 @@
 <template>
   <div class="home">
     <head-public :nav="0" :style="headTop"></head-public>
-    <div class="banner">
-      <el-carousel indicator-position="outside">
-        <el-carousel-item v-for="item,index in 1" :key="index">
-          <img src="../assets/images/home/home_banner.png">
-        </el-carousel-item>
-      </el-carousel>
+    <div class="banner" v-if="!uid">
+      <img src="../assets/images/home/home_banner.png">
       <div class="bannerText">
-        <div class="bannerTextHead">
-          知己知彼，让理财不慌不乱
-          <p>个人风险评估测试：<span>1分钟</span>开启优质理财生活</p>
-        </div>
         <div class="assessmentBtn" @click="$router.push({name:'LoginAssessment'})">
           开始评估
         </div>
       </div>
     </div>
-    <div class="data">
+    <div class="data" :class="{isPd:uid}">
       <div class="dataWrap">
         行情数据：
         <vue-seamless-scroll :data="dataList" class="seamless-warp" :class-option="classOption" v-if="dataShow">
           <ul class="data">
             <li v-for="item in dataList">
               {{item.name}}
-              <p>{{item.stock}}<span>{{item.percent}}</span></p>
+              <p :class="{isGreen:/-/.test(item.percent)}">{{item.stock}}<span>{{item.percent}}</span></p>
             </li>
           </ul>
         </vue-seamless-scroll>
@@ -87,10 +79,10 @@
               </div>
               <div class="topMain">
                 <div class="mainFirst">
-                  <span>精选</span>
+                  <span>{{item.category_name}}</span>
                   <div>
                     <p>{{item.title}}</p>
-                    <span>{{item.summary}}</span>
+                    <div>{{item.summary}}</div>
                   </div>
                 </div>
                 <div class="mainFoo">
@@ -126,18 +118,42 @@
           </div>
         </div>
       </div>
-      <div class="introduce">
+      <div class="introduce" v-if="!uid">
         <img src="../assets/images/home/home_foot.png">
       </div>
-      <div class="partner">
+      <div class="partner" v-if="!uid">
         <div class="partnerTitle">
           合作伙伴
           <p>partner</p>
         </div>
         <ul class="partnerImg">
-          <li v-for="item in footList">
+          <li v-for="item in footList" @click="openFoot(item)">
             <div>
               <img :src="item.img">
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="news" v-if="uid" v-loading="likeShow">
+        <div class="newsTit">
+          <span></span>
+          <div>
+            猜你喜欢
+            <p @click="changeClick">换一批</p>
+          </div>
+        </div>
+        <ul class="newsList">
+          <li v-for="item in newsList" @click="openDetail(item)">
+            <div class="newsImg">
+              <img :src="item.cover_pic" alt="">
+            </div>
+            <div class="newsMain">
+              <div>
+                {{item.title}}
+              </div>
+              <span>
+              {{item.publish_time}}
+            </span>
             </div>
           </li>
         </ul>
@@ -152,6 +168,7 @@
       return {
         loading:false,
         dataShow:false,
+        likeShow:false,
         userInfo:{},
         uid:'',
         scoreInfo:{},
@@ -163,25 +180,35 @@
         },
         dataList:[],
         topList:[],
+        newsList:[],
         footList:[
           {
-            img:require('../assets/images/foot/foot1.png')
+            img:require('../assets/images/foot/foot1.png'),
+            url:'https://www.ubs.com/cn/en.html'
           }, {
-            img:require('../assets/images/foot/foot2.png')
+            img:require('../assets/images/foot/foot2.png'),
+            url:'http://www.aia.com.cn/zh-cn/index.html'
           }, {
-            img:require('../assets/images/foot/foot3.png')
+            img:require('../assets/images/foot/foot3.png'),
+            url:'http://www.yicai.com/'
           }, {
-            img:require('../assets/images/foot/foot4.png')
+            img:require('../assets/images/foot/foot4.png'),
+            url:'http://www.hkbea.com.cn/'
           }, {
-            img:require('../assets/images/foot/foot5.png')
+            img:require('../assets/images/foot/foot5.png'),
+            url:'http://www.hftfund.com/'
           }, {
-            img:require('../assets/images/foot/foot6.png')
+            img:require('../assets/images/foot/foot6.png'),
+            url:'http://www.bnpparibas.com.cn/zh/'
           }, {
-            img:require('../assets/images/foot/foot7.png')
+            img:require('../assets/images/foot/foot7.png'),
+            url:'http://www.freeman279.com/'
           }, {
-            img:require('../assets/images/foot/foot8.png')
+            img:require('../assets/images/foot/foot8.png'),
+            url:'http://www.swisstime.ch/zh/news/'
           }, {
-            img:require('../assets/images/foot/foot9.png')
+            img:require('../assets/images/foot/foot9.png'),
+            url:'http://www.swisstime.ch/zh/news/'
           },
         ]
       }
@@ -208,6 +235,24 @@
       }
     },
     methods: {
+      openFoot(item){
+        window.open(item.url)
+      },
+      changeClick(){
+        let self = this
+        self.likeShow = true
+        self.newsList = [];
+
+        self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:4},res=>{
+          for(let v of res.data){
+            v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+          }
+          self.newsList = res.data
+        })
+        setTimeout(()=>{
+          self.likeShow = false
+        },500)
+      },
       scroll(){
         let self = this
         this.animate=true;    // 因为在消息向上滚动的时候需要添加css3过渡动画，所以这里需要设置true
@@ -250,6 +295,13 @@
         })
       }
 
+      self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:4},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.newsList = res.data
+      })
+
       self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:10},res=>{
         for(let v of res.data){
           v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
@@ -276,6 +328,9 @@
     align-items: center;
     height: 40px;
     border-bottom: 1px solid #ccc;
+    &.isPd{
+      margin-top: 80px;
+    }
     .dataWrap{
       display: flex;
       align-items: center;
@@ -291,6 +346,9 @@
         p{
           color: #aa0000;
           margin-left: 10px;
+          &.isGreen{
+            color: #49962e!important;
+          }
           span{
             margin-left: 10px;
           }
@@ -474,7 +532,7 @@
                     -webkit-box-orient:vertical;
                     -webkit-line-clamp:2;
                   }
-                  span{
+                  div{
                     margin-top: 15px;
                     font-size: 14px;
                     color: #666;
@@ -667,14 +725,111 @@
         }
       }
     }
+    .news{
+      width: 100%;
+      max-width: 1140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 60px;
+      .newsTit{
+        width: 100%;
+        padding: 30px;
+        box-sizing: border-box;
+        position: relative;
+        font-size: 18px;
+        color: #000;
+        span{
+          width: 2px;
+          height: 20px;
+          background: #9d8148;
+          content: '';
+          position: absolute;
+          left: 6px;
+          top: calc(~'50% - 10px');
+        }
+        &:before{
+          width: 4px;
+          height: 20px;
+          background: #9d8148;
+          content: '';
+          position: absolute;
+          left: 0;
+          top: calc(~'50% - 10px');
+        }
+        div{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          p{
+            font-size: 13px;
+            color: #9d8148;
+          }
+        }
+      }
+      .newsList{
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+        width: 100%;
+        li{
+          width: calc(~'25% - 15px');
+          margin:0 20px 20px 0;
+          border:1px solid #ededed;
+          box-sizing: border-box;
+          transition: all 0.5s;
+          &:nth-child(4n){
+            margin-right:0 ;
+          }
+          &:hover{
+            box-shadow: 0 2px 5px #ccc;
+          }
+          .newsImg{
+            width: 100%;
+            height: 196px;
+            overflow: hidden;
+            img{
+              transition: all 0.5s;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            &:hover{
+              img{
+                transform: scale(1.1);
+              }
+            }
+          }
+          .newsMain{
+            height: 115px;
+            width: 100%;
+            padding: 20px 15px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            div{
+              font-size: 16px;
+              color: #000;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 2;
+              overflow: hidden;
+            }
+            span{
+              font-size: 12px;
+              color: #999;
+            }
+          }
+        }
+      }
+    }
   }
   .banner{
     position: relative;
     .bannerText{
-      top:  calc(~'50% - 200px');
-      left: calc(~'50% - 400px');
-      width: 800px;
-      height: 400px;
+      top:  calc(~'50% + 100px');
+      left: calc(~'50% - 80px');
       z-index: 10;
       position: absolute;
       display: flex;
@@ -696,7 +851,7 @@
         }
       }
       .assessmentBtn{
-        width: 158px;
+        width: 160px;
         height: 50px;
         background: #9d8148;
         display: flex;

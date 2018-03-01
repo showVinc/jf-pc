@@ -58,10 +58,6 @@
           },{
             name:'金丰研究所',
             path:'/research'
-          },
-          {
-            name:'关于我们',
-            path:'/'
           }
         ]
       }

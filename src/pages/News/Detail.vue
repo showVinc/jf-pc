@@ -106,7 +106,7 @@
         }
         .date{
           display: flex;
-          justify-content: space-between;
+          justify-content: center;
           align-items: center;
           margin: 40px 0;
           span{
@@ -177,6 +177,7 @@
           display: flex;
           flex-wrap: wrap;
           margin-bottom: 40px;
+          width: 100%;
           li{
             width: calc(~'25% - 15px');
             margin:0 20px 20px 0;
@@ -230,6 +231,16 @@
         }
       }
     }
+  }
+</style>
+<style lang="less" type="text/less">
+  .newsDetailWrap{
+    img{
+      max-width: 100%!important;
+    }
+    line-height: 30px;
+    text-align: justify;
+    min-font-size: 16px;
   }
 </style>
 
