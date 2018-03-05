@@ -227,6 +227,10 @@
                   p{
                     font-size: 14px;
                     color: #666;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 3;
+                    overflow: hidden;
                   }
                 }
                 span{
@@ -296,7 +300,6 @@
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
-                margin-top: 15px;
                 overflow: hidden;
                 font-weight: bold;
               }
@@ -342,7 +345,7 @@
                 color: #000;
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
-                -webkit-line-clamp: 2;
+                -webkit-line-clamp:2;
                 overflow: hidden;
               }
             }

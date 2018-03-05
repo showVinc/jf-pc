@@ -10,10 +10,10 @@
           </ul>
           <ul class="footRight">
             <li>
-              商务合作邮箱：info@jf-fn.com
+              商务合作邮箱：info@jf-fin.com
             </li>
             <li>
-              电话：400-081-6118
+              电话：4000-816-118
             </li>
             <li>
               地址：深圳市福田区益田路5033号平安金融中心73楼

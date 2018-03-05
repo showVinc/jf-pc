@@ -128,7 +128,6 @@
           }
         }
         .main{
-          font-size: 14px;
           color: #333;
         }
       }
@@ -237,10 +236,16 @@
   .newsDetailWrap{
     img{
       max-width: 100%!important;
+      display: block;
+      margin: 0 auto;
     }
     line-height: 30px;
     text-align: justify;
-    min-font-size: 16px;
+    font-size: 16px;
+    .ql-align-center{
+      display: flex;
+      justify-content: center;
+    }
   }
 </style>
 

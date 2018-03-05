@@ -27,7 +27,7 @@
           </div>
           <div class="isLogin">
             <div @click="sub">
-              密码
+              登录
             </div>
             <!--<span @click="$router.push('/login/back')">-->
               <!--<img src="../../assets/images/public_img/arrow.png" alt="">-->

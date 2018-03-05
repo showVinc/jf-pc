@@ -17,9 +17,9 @@
           </div>
         </li>
       </ul>
-      <div class="moreBtn" v-if="page.p<page.total_pages">
-        加载更多
-      </div>
+      <!--<div class="moreBtn" v-if="page.p<page.total_pages">-->
+        <!--加载更多-->
+      <!--</div>-->
       <div class="news"  v-loading="loading">
         <div class="newsTit">
           <span></span>
@@ -27,16 +27,16 @@
         </div>
         <no-more v-if="newsList.length<=0"></no-more>
         <ul class="newsList">
-          <li v-for="item in newsList">
+          <li v-for="item in newsList" @click="openDetail(item)">
             <div class="newsImg">
-              <img :src="item.img" alt="">
+              <img :src="item.cover_pic">
             </div>
             <div class="newsMain">
               <div>
                 {{item.title}}
               </div>
               <span>
-              {{item.date}}
+              {{item.publish_time}}
             </span>
             </div>
           </li>
@@ -76,20 +76,26 @@
       moreClick(){
         let self = this
         self.loading = true
-        setTimeout(()=>{
-          self.newsList = self.newsList.concat(self.newsList)
-          self.loading = false
-        },500)
-      }
+      },
+      openDetail(item){
+        this.$router.push({path:'/news/detail',query:{aid:item.aid}})
+      },
     },
     mounted(){
       let self = this
-      self.$fun.get(`${process.env.API.API}/news/list`,{rows:10,p:1,code:self.$route.query.id},res=>{
+      self.$fun.get(`${process.env.API.API}/news/list`,{rows:100,p:1,code:self.$route.query.id},res=>{
         for(let v of res.data){
           v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
         }
         self.list = res.data
         self.page = res.page
+      })
+
+      self.$fun.get(`${process.env.API.API}/news/relate`,{rows:8,p:1,code:self.$route.query.id},res=>{
+        for(let v of res.data){
+          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        }
+        self.newsList = res.data
       })
     }
   }
@@ -220,6 +226,7 @@
           display: flex;
           flex-wrap: wrap;
           margin-bottom: 40px;
+          width: 100%;
           li{
             width: calc(~'25% - 15px');
             margin:0 20px 20px 0;

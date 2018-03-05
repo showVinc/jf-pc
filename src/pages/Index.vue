@@ -9,7 +9,10 @@
         </div>
       </div>
     </div>
-    <div class="data" :class="{isPd:uid}">
+    <div class="isLogin" v-if="uid">
+      <img src="../assets/images/home/is_login.png" v-if="uid">
+    </div>
+    <div class="data">
       <div class="dataWrap">
         行情数据：
         <vue-seamless-scroll :data="dataList" class="seamless-warp" :class-option="classOption" v-if="dataShow">
@@ -45,7 +48,8 @@
             <div class="main">
               <ul>
                 <li v-for="item in scoreInfo.star">
-                  <span>{{item.name}}</span><el-rate v-model="item.value" disabled></el-rate>
+                  <span>{{item.name}}</span>
+                  <el-rate v-model="item.value" disabled></el-rate>
                 </li>
               </ul>
               <p>
@@ -58,7 +62,7 @@
       <div class="selected">
         <div class="selectedTitle" v-if="!uid">
           金丰精选TOP10
-          <p>Jin feng selected TOP10</p>
+          <p>Seleted Highlights</p>
         </div>
         <div class="selectedHead" v-if="uid">
           <span>
@@ -80,7 +84,7 @@
               <div class="topMain">
                 <div class="mainFirst">
                   <span>{{item.category_name}}</span>
-                  <div>
+                  <div class="hide">
                     <p>{{item.title}}</p>
                     <div>{{item.summary}}</div>
                   </div>
@@ -101,7 +105,7 @@
                   </span>
                 </div>
                 <div class="content">
-                  <div>
+                  <div class="hide">
                     <div>{{item.title}}</div>
                     <p>{{item.summary}}</p>
                   </div>
@@ -124,7 +128,7 @@
       <div class="partner" v-if="!uid">
         <div class="partnerTitle">
           合作伙伴
-          <p>partner</p>
+          <p>Strategic Partners</p>
         </div>
         <ul class="partnerImg">
           <li v-for="item in footList" @click="openFoot(item)">
@@ -166,50 +170,57 @@
   export default {
     data() {
       return {
-        loading:false,
-        dataShow:false,
-        likeShow:false,
-        userInfo:{},
-        uid:'',
-        scoreInfo:{},
-        headTop:{
+        loading: false,
+        dataShow: false,
+        likeShow: false,
+        userInfo: {},
+        likeP: 1,
+        uid: '',
+        scoreInfo: {},
+        headTop: {
           position: 'fixed',
           top: 0,
           left: 0,
-          'z-index':999
+          'z-index': 999
         },
-        dataList:[],
-        topList:[],
-        newsList:[],
-        footList:[
+        dataList: [],
+        topList: [],
+        newsList: [],
+        footList: [
           {
-            img:require('../assets/images/foot/foot1.png'),
-            url:'https://www.ubs.com/cn/en.html'
+            img: require('../assets/images/foot/foot1.png'),
+            url: 'https://www.ubs.com/cn/en.html'
           }, {
-            img:require('../assets/images/foot/foot2.png'),
-            url:'http://www.aia.com.cn/zh-cn/index.html'
+            img: require('../assets/images/foot/foot2.png'),
+            url: 'http://www.aia.com.cn/zh-cn/index.html'
           }, {
-            img:require('../assets/images/foot/foot3.png'),
-            url:'http://www.yicai.com/'
+            img: require('../assets/images/foot/foot3.png'),
+            url: 'http://www.yicai.com/'
           }, {
-            img:require('../assets/images/foot/foot4.png'),
-            url:'http://www.hkbea.com.cn/'
+            img: require('../assets/images/foot/foot4.png'),
+            url: 'http://www.hkbea.com.cn/'
           }, {
-            img:require('../assets/images/foot/foot5.png'),
-            url:'http://www.hftfund.com/'
+            img: require('../assets/images/foot/foot5.png'),
+            url: 'http://www.hftfund.com/'
           }, {
-            img:require('../assets/images/foot/foot6.png'),
-            url:'http://www.bnpparibas.com.cn/zh/'
+            img: require('../assets/images/foot/foot6.png'),
+            url: 'http://www.bnpparibas.com.cn/zh/'
           }, {
-            img:require('../assets/images/foot/foot7.png'),
-            url:'http://www.freeman279.com/'
+            img: require('../assets/images/foot/foot7.png'),
+            url: 'http://www.freeman279.com/'
           }, {
-            img:require('../assets/images/foot/foot8.png'),
-            url:'http://www.swisstime.ch/zh/news/'
+            img: require('../assets/images/foot/foot8.png'),
+            url: 'http://www.swisstime.ch/zh/news/'
           }, {
-            img:require('../assets/images/foot/foot9.png'),
-            url:'http://www.swisstime.ch/zh/news/'
-          },
+            img: require('../assets/images/foot/foot9.png'),
+            url: 'http://www.swisstime.ch/zh/news/'
+          }, {
+            img: require('../assets/images/foot/foot10.png'),
+            url: 'http://www.idcm.io'
+          }, {
+            img: require('../assets/images/foot/foot11.png'),
+            url: 'http://www.redflagintel.com'
+          }
         ]
       }
     },
@@ -225,86 +236,82 @@
           waitTime: 1000 //单步停止等待时间
         }
       },
-      options () {
+      options() {
         // 合并参数
         return Object.assign({}, this.defaultOption, this.classOption)
       },
-      moveSwitch () {
+      moveSwitch() {
         //判断传入的初始滚动值和data的length来控制是否滚动
         return this.dataList.length < this.options.limitMoveNum
       }
     },
     methods: {
-      openFoot(item){
+      openFoot(item) {
         window.open(item.url)
       },
-      changeClick(){
+      changeClick() {
         let self = this
         self.likeShow = true
-        self.newsList = [];
-
-        self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:4},res=>{
-          for(let v of res.data){
-            v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+        self.newsList = []
+        self.likeP++
+        if (self.likeP >= 5) {
+          self.likeP = 1
+        }
+        self.$fun.get(`${process.env.API.API}/news/push`, {c: self.likeP, rows: 4}, res => {
+          for (let v of res.data) {
+            v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
           }
           self.newsList = res.data
         })
-        setTimeout(()=>{
+        setTimeout(() => {
           self.likeShow = false
-        },500)
+        }, 500)
       },
-      scroll(){
-        let self = this
-        this.animate=true;    // 因为在消息向上滚动的时候需要添加css3过渡动画，所以这里需要设置true
-        setTimeout(()=>{      //  这里直接使用了es6的箭头函数，省去了处理this指向偏移问题，代码也比之前简化了很多
-          this.animate=false;  // margin-top 为0 的时候取消过渡动画，实现无缝滚动
-        },500)
+      openDetail(item) {
+        this.$router.push({path: '/news/detail', query: {aid: item.aid}})
       },
-      openDetail(item){
-        this.$router.push({path:'/news/detail',query:{aid:item.aid}})
-      },
-      moreBtn(){
+      moreBtn() {
         let self = this
       },
-      urlShow(item){
-        if(item.url){
+      urlShow(item) {
+        if (item.url) {
           window.open(item.url)
         }
       }
     },
     created() {
       let self = this
-      window.scrollTo(0,0)
-      self.$fun.get(`${process.env.API.API}/sto`,{rows:100},res=>{
-        for(let i=0;i<99;i++){
+      window.scrollTo(0, 0)
+      self.$fun.get(`${process.env.API.API}/sto`, {rows: 100}, res => {
+        for (let i = 0; i < 99; i++) {
           self.dataList = self.dataList.concat(res.data)
         }
         self.dataShow = true
       })
-      setTimeout(()=>{
+      setTimeout(() => {
         self.userInfo = self.$store.state.userInfo
-      },300)
+      }, 300)
     },
-    mounted(){
+    mounted() {
       let self = this
-      setInterval(this.scroll,1000)
+      setInterval(this.scroll, 1000)
       self.uid = sessionStorage.getItem('authorization')
-      if(self.uid){
-        self.$fun.get(`${process.env.API.API}/qunn/res`,{},res=>{
+      if (self.uid) {
+        self.$fun.get(`${process.env.API.API}/qunn/res`, {}, res => {
           self.scoreInfo = res.data
         })
       }
 
-      self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:4},res=>{
-        for(let v of res.data){
-          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+      self.$fun.get(`${process.env.API.API}/news/push`, {c: 1, rows: 4}, res => {
+        for (let v of res.data) {
+          v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
         }
         self.newsList = res.data
       })
 
-      self.$fun.get(`${process.env.API.API}/news/list`,{is_recommend:1,rows:10},res=>{
-        for(let v of res.data){
-          v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+      self.$fun.get(`${process.env.API.API}/news/list`, {is_recommend: 1, rows: 10}, res => {
+        for (let v of res.data) {
+          v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
         }
         self.topList = res.data
       })
@@ -320,7 +327,7 @@
     overflow: hidden;
   }
 
-  .data{
+  .data {
     color: #333;
     font-size: 14px;
     display: flex;
@@ -328,47 +335,45 @@
     align-items: center;
     height: 40px;
     border-bottom: 1px solid #ccc;
-    &.isPd{
-      margin-top: 80px;
-    }
-    .dataWrap{
+    .dataWrap {
       display: flex;
       align-items: center;
       width: 100%;
       max-width: 1140px;
     }
-    ul{
+    ul {
       margin-left: 15px;
       display: flex;
-      li{
+      li {
         display: flex;
         padding-right: 25px;
-        p{
+        p {
           color: #aa0000;
           margin-left: 10px;
-          &.isGreen{
-            color: #49962e!important;
+          &.isGreen {
+            color: #49962e !important;
           }
-          span{
+          span {
             margin-left: 10px;
           }
         }
       }
     }
   }
-  .publicMain{
-    padding:35px 0;
-    .category{
+
+  .publicMain {
+    padding: 35px 0;
+    .category {
       width: 100%;
       max-width: 1140px;
       margin-bottom: 40px;
-      .categoryHead{
+      .categoryHead {
         display: flex;
         justify-content: space-between;
         align-items: center;
         position: relative;
         margin-bottom: 10px;
-        &:before{
+        &:before {
           width: 5px;
           height: 20px;
           position: absolute;
@@ -377,13 +382,13 @@
           left: 0;
           top: calc(~'50% - 10px');
         }
-        span{
+        span {
           color: #000;
           font-size: 17px;
           padding-left: 15px;
           box-sizing: border-box;
           position: relative;
-          &:before{
+          &:before {
             width: 2px;
             height: 20px;
             position: absolute;
@@ -393,16 +398,16 @@
             top: calc(~'50% - 10px');
           }
         }
-        p{
+        p {
           font-size: 13px;
           color: #9d8148;
         }
       }
-      .categoryMain{
+      .categoryMain {
         display: flex;
         align-items: center;
         width: 100%;
-        .mainLeft{
+        .mainLeft {
           padding: 15px;
           border-radius: 50%;
           font-size: 44px;
@@ -410,32 +415,32 @@
           align-items: center;
           justify-content: center;
           position: relative;
-          span{
+          span {
             position: absolute;
           }
         }
-        .mainRight{
+        .mainRight {
           width: calc(~'100% - 222px');
           padding-left: 15px;
           box-sizing: border-box;
-          .tit{
+          .tit {
             font-size: 29px;
             color: #9d8148;
           }
-          .main{
-            ul{
+          .main {
+            ul {
               margin: 20px 0;
               display: flex;
-              li{
+              li {
                 display: flex;
                 align-items: center;
                 width: 25%;
-                span{
+                span {
                   margin-right: 10px;
                 }
               }
             }
-            p{
+            p {
               font-size: 15px;
               color: #333;
             }
@@ -443,30 +448,30 @@
         }
       }
     }
-    .selected{
+    .selected {
       width: 100%;
       max-width: 1140px;
       margin-bottom: 30px;
-      .selectedTitle{
+      .selectedTitle {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         font-size: 30px;
         color: #000;
-        p{
+        p {
           font-size: 24px;
           color: #999;
           margin: 10px 0 60px;
         }
       }
-      .selectedHead{
+      .selectedHead {
         display: flex;
         justify-content: space-between;
         align-items: center;
         position: relative;
         margin-bottom: 25px;
-        &:before{
+        &:before {
           width: 5px;
           height: 20px;
           position: absolute;
@@ -475,13 +480,13 @@
           left: 0;
           top: calc(~'50% - 10px');
         }
-        span{
+        span {
           color: #000;
           font-size: 17px;
           padding-left: 15px;
           box-sizing: border-box;
           position: relative;
-          &:before{
+          &:before {
             width: 2px;
             height: 20px;
             position: absolute;
@@ -492,26 +497,26 @@
           }
         }
       }
-      .selectedMain{
-        .topHeadList{
+      .selectedMain {
+        .topHeadList {
           display: flex;
-          li{
+          li {
             width: 31%;
             margin-right: 3.5%;
-            border:1px solid #e9e9e9;
+            border: 1px solid #e9e9e9;
             box-sizing: border-box;
             transition: all 0.5s;
-             &:hover{
-               box-shadow: 0 2px 5px #ccc;
-               .topHeadImg{
-                 div{
-                   img{
-                     transform: scale(1.1);
-                   }
-                 }
-               }
-             }
-            .topMain{
+            &:hover {
+              box-shadow: 0 2px 5px #ccc;
+              .topHeadImg {
+                div {
+                  img {
+                    transform: scale(1.1);
+                  }
+                }
+              }
+            }
+            .topMain {
               width: 100%;
               height: 220px;
               display: flex;
@@ -519,59 +524,55 @@
               justify-content: space-between;
               padding: 15px 20px 20px;
               box-sizing: border-box;
-              .mainFirst{
+              .mainFirst {
                 font-size: 18px;
-                div{
+                .hide {
                   margin-top: 15px;
                   color: #333;
-                  p{
+                  p {
                     font-size: 18px;
-                    overflow:hidden;
-                    text-overflow:ellipsis;
-                    display:-webkit-box;
-                    -webkit-box-orient:vertical;
-                    -webkit-line-clamp:2;
+                    text-overflow: ellipsis;
+                    max-height: 48px;
+                    overflow: hidden;
                   }
-                  div{
+                  div {
                     margin-top: 15px;
                     font-size: 14px;
                     color: #666;
-                    overflow:hidden;
-                    text-overflow:ellipsis;
-                    display:-webkit-box;
-                    -webkit-box-orient:vertical;
-                    -webkit-line-clamp:3;
+                    text-overflow: ellipsis;
+                    max-height: 57px;
+                    overflow: hidden;
                   }
                 }
-                span{
+                span {
                   font-size: 12px;
                   color: #666;
                 }
               }
-              .mainFoo{
+              .mainFoo {
                 font-size: 12px;
                 color: #999;
               }
             }
-            &:hover{
+            &:hover {
               border-color: #9d8148;
             }
-            &:last-child{
+            &:last-child {
               margin: 0;
             }
-            .topHeadImg{
+            .topHeadImg {
               position: relative;
-              div{
+              div {
                 overflow: hidden;
                 height: 270px;
-                img{
+                img {
                   width: 100%;
                   height: 100%;
                   object-fit: cover;
                   transition: all 0.5s;
                 }
               }
-              p{
+              p {
                 width: 100px;
                 height: 30px;
                 display: flex;
@@ -588,31 +589,31 @@
             }
           }
         }
-        .topFooWrap{
+        .topFooWrap {
           margin-top: 30px;
-          border:1px solid #e9e9e9;
+          border: 1px solid #e9e9e9;
           display: flex;
           flex-direction: column;
           align-items: center;
-          .topFooList{
+          .topFooList {
             display: flex;
             flex-direction: column;
             width: 100%;
-            li{
+            li {
               display: flex;
               padding: 30px 120px 23px;
               transition: all 0.5s;
               width: 100%;
               box-sizing: border-box;
-              &:hover{
+              &:hover {
                 background: #f5f2ec;
-                .imgRight{
-                  img{
+                .imgRight {
+                  img {
                     transform: scale(1.1);
                   }
                 }
               }
-              .num{
+              .num {
                 width: 28px;
                 height: 28px;
                 display: flex;
@@ -622,36 +623,42 @@
                 background-size: cover;
                 font-size: 14px;
                 color: #9d8148;
-                span{
+                span {
                   padding-bottom: 5px;
                 }
               }
-              .content{
+              .content {
                 width: calc(~'100% - 175px');
                 padding: 0 30px;
                 box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                div{
-                  div{
+                .hide {
+                  div {
                     font-size: 18px;
                     color: #333;
                     margin-bottom: 15px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-height: 48px;
                   }
-                  p{
+                  p {
                     font-size: 14px;
                     color: #666;
+                    text-overflow: ellipsis;
+                    max-height: 57px;
+                    overflow: hidden;
                   }
                 }
-                span{
+                span {
                   font-size: 12px;
                   color: #999;
                 }
               }
-              .imgRight{
+              .imgRight {
                 overflow: hidden;
-                img{
+                img {
                   width: 147px;
                   height: 110px;
                   object-fit: cover;
@@ -660,14 +667,14 @@
               }
             }
           }
-          .moreBtn{
+          .moreBtn {
             width: 100px;
             height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #9d8148;
-            border:1px solid #9d8148;
+            border: 1px solid #9d8148;
             box-sizing: border-box;
             margin: 20px 0 60px;
             border-radius: 5px;
@@ -675,16 +682,16 @@
         }
       }
     }
-    .introduce{
+    .introduce {
       margin-bottom: 50px;
-      img{
+      img {
         width: 100%;
       }
     }
-    .partner{
+    .partner {
       width: 100%;
       max-width: 1140px;
-      .partnerTitle{
+      .partnerTitle {
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -692,28 +699,28 @@
         font-size: 33px;
         color: #000;
         margin-bottom: 60px;
-        p{
+        p {
           font-size: 26px;
           color: #999;
         }
       }
-      .partnerImg{
+      .partnerImg {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        li{
+        li {
           height: 45px;
-          margin:0 70px 30px 0;
-          div{
+          margin: 0 50px 30px 0;
+          div {
             height: 100%;
             box-sizing: border-box;
-            &:hover{
-             img{
-               filter: grayscale(0%);
-               opacity: 1;
-             }
+            &:hover {
+              img {
+                filter: grayscale(0%);
+                opacity: 1;
+              }
             }
-            img{
+            img {
               /*width: 100%;*/
               height: 100%;
               object-fit: cover;
@@ -725,21 +732,21 @@
         }
       }
     }
-    .news{
+    .news {
       width: 100%;
       max-width: 1140px;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-bottom: 60px;
-      .newsTit{
+      .newsTit {
         width: 100%;
         padding: 30px;
         box-sizing: border-box;
         position: relative;
         font-size: 18px;
         color: #000;
-        span{
+        span {
           width: 2px;
           height: 20px;
           background: #9d8148;
@@ -748,7 +755,7 @@
           left: 6px;
           top: calc(~'50% - 10px');
         }
-        &:before{
+        &:before {
           width: 4px;
           height: 20px;
           background: #9d8148;
@@ -757,50 +764,50 @@
           left: 0;
           top: calc(~'50% - 10px');
         }
-        div{
+        div {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          p{
+          p {
             font-size: 13px;
             color: #9d8148;
           }
         }
       }
-      .newsList{
+      .newsList {
         display: flex;
         flex-wrap: wrap;
         margin-bottom: 40px;
         width: 100%;
-        li{
+        li {
           width: calc(~'25% - 15px');
-          margin:0 20px 20px 0;
-          border:1px solid #ededed;
+          margin: 0 20px 20px 0;
+          border: 1px solid #ededed;
           box-sizing: border-box;
           transition: all 0.5s;
-          &:nth-child(4n){
-            margin-right:0 ;
+          &:nth-child(4n) {
+            margin-right: 0;
           }
-          &:hover{
+          &:hover {
             box-shadow: 0 2px 5px #ccc;
           }
-          .newsImg{
+          .newsImg {
             width: 100%;
             height: 196px;
             overflow: hidden;
-            img{
+            img {
               transition: all 0.5s;
               width: 100%;
               height: 100%;
               object-fit: cover;
             }
-            &:hover{
-              img{
+            &:hover {
+              img {
                 transform: scale(1.1);
               }
             }
           }
-          .newsMain{
+          .newsMain {
             height: 115px;
             width: 100%;
             padding: 20px 15px;
@@ -808,7 +815,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            div{
+            div {
               font-size: 16px;
               color: #000;
               display: -webkit-box;
@@ -816,7 +823,7 @@
               -webkit-line-clamp: 2;
               overflow: hidden;
             }
-            span{
+            span {
               font-size: 12px;
               color: #999;
             }
@@ -825,32 +832,45 @@
       }
     }
   }
-  .banner{
+
+  .isLogin {
+    margin-top: 80px;
+    padding-top: 20px;
+    margin-bottom: 20px;
+    img {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      display: block;
+    }
+  }
+
+  .banner {
     position: relative;
-    .bannerText{
-      top:  calc(~'50% + 100px');
+    .bannerText {
+      top: calc(~'50% + 100px');
       left: calc(~'50% - 80px');
       z-index: 10;
       position: absolute;
       display: flex;
-      flex-direction:column;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       color: #fff;
-      .bannerTextHead{
+      .bannerTextHead {
         display: flex;
         flex-direction: column;
         align-items: center;
         font-size: 41px;
-        p{
+        p {
           font-size: 34px;
           margin: 20px 0 110px;
-          span{
+          span {
             font-weight: bold;
           }
         }
       }
-      .assessmentBtn{
+      .assessmentBtn {
         width: 160px;
         height: 50px;
         background: #9d8148;
@@ -865,26 +885,26 @@
   }
 </style>
 <style lang="less" type="text/less">
-  .banner{
-    .el-carousel__container{
+  .banner {
+    .el-carousel__container {
       height: 660px;
-      img{
+      img {
         width: 100%;
         object-fit: cover;
         height: 100%;
       }
     }
-    .el-carousel__indicators{
+    .el-carousel__indicators {
       width: 100%;
       left: 0;
       position: absolute;
-      .el-carousel__indicator{
-        &.is-active{
-          .el-carousel__button{
+      .el-carousel__indicator {
+        &.is-active {
+          .el-carousel__button {
             background: #9d8148;
           }
         }
-        .el-carousel__button{
+        .el-carousel__button {
           width: 14px;
           height: 14px;
           border-radius: 50%;

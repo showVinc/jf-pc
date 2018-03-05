@@ -114,6 +114,9 @@
         self.page.p = 1
         self.researchList = []
         self.$fun.get(`${process.env.API.API}/news/list`,{rows:10,p:self.page.p,code:item.code},res=>{
+          for(let v of res.data){
+            v.publish_time = self.$moment(v.publish_time*1000).format('YYYY-MM-DD')
+          }
           self.researchList = res.data
           self.page = res.page
         })
@@ -217,11 +220,16 @@
                   p{
                     font-size: 14px;
                     color: #666;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 3;
+                    overflow: hidden;
                   }
                 }
                 span{
                   font-size: 12px;
                   color: #999;
+                  margin-top: 5px;
                 }
               }
             }
@@ -283,12 +291,12 @@
                 font-size: 16px;
                 color: #000;
                 width: 100%;
+                margin-top: 15px;
+                font-weight: bold;
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
-                margin-top: 15px;
                 overflow: hidden;
-                font-weight: bold;
               }
               span{
                 background-image: url("../../assets/images/home/hot.png");
