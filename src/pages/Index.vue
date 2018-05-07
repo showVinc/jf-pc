@@ -167,6 +167,7 @@
   </div>
 </template>
 <script>
+  import api from '../api'
   export default {
     data() {
       return {
@@ -279,42 +280,55 @@
         }
       }
     },
-    created() {
-      let self = this
-      window.scrollTo(0, 0)
-      self.$fun.get(`${process.env.API.API}/sto`, {rows: 100}, res => {
-        for (let i = 0; i < 99; i++) {
-          self.dataList = self.dataList.concat(res.data)
-        }
-        self.dataShow = true
-      })
-      setTimeout(() => {
-        self.userInfo = self.$store.state.userInfo
-      }, 300)
-    },
+    // created() {
+    //   let self = this
+    //   window.scrollTo(0, 0)
+    //   self.$fun.get(`${process.env.API.API}/sto`, {rows: 100}, res => {
+    //     for (let i = 0; i < 99; i++) {
+    //       self.dataList = self.dataList.concat(res.data)
+    //     }
+    //     self.dataShow = true
+    //   })
+    //   setTimeout(() => {
+    //     self.userInfo = self.$store.state.userInfo
+    //   }, 300)
+    // },
     mounted() {
-      let self = this
-      setInterval(this.scroll, 1000)
-      self.uid = sessionStorage.getItem('authorization')
-      if (self.uid) {
-        self.$fun.get(`${process.env.API.API}/qunn/res`, {}, res => {
-          self.scoreInfo = res.data
-        })
-      }
-
-      self.$fun.get(`${process.env.API.API}/news/push`, {c: 1, rows: 4}, res => {
-        for (let v of res.data) {
-          v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
-        }
-        self.newsList = res.data
+      // api.getNews({item:'123'}).then(res=>{
+      //   console.log(res,123)
+      // })
+      this.$http.get(`${process.env.API.API}/user/demo`).then(res=>{
+        console.log(res)
       })
-
-      self.$fun.get(`${process.env.API.API}/news/list`, {is_recommend: 1, rows: 10}, res => {
-        for (let v of res.data) {
-          v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
-        }
-        self.topList = res.data
+      this.$http.get(`${process.env.API.API}/user/index`).then(res=>{
+        console.log(res)
       })
+      //
+      // this.$http.get(`${process.env.API.API}/home/index/demo`).then(res=>{
+      //   console.log(res)
+      // })
+      // let self = this
+      // setInterval(this.scroll, 1000)
+      // self.uid = sessionStorage.getItem('authorization')
+      // if (self.uid) {
+      //   self.$fun.get(`${process.env.API.API}/qunn/res`, {}, res => {
+      //     self.scoreInfo = res.data
+      //   })
+      // }
+      //
+      // self.$fun.get(`${process.env.API.API}/news/push`, {c: 1, rows: 4}, res => {
+      //   for (let v of res.data) {
+      //     v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
+      //   }
+      //   self.newsList = res.data
+      // })
+      //
+      // self.$fun.get(`${process.env.API.API}/news/list`, {is_recommend: 1, rows: 10}, res => {
+      //   for (let v of res.data) {
+      //     v.publish_time = self.$moment(v.publish_time * 1000).format('YYYY-MM-DD')
+      //   }
+      //   self.topList = res.data
+      // })
     },
     //获取底部组件
     components: {}

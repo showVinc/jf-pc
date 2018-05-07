@@ -5,7 +5,8 @@ import Index from '@/pages/Index'
 Vue.use(Router)
 
 export default new Router({
-  // mode:'history',
+  mode:'history',
+  base: __dirname,
   routes: [
     {
       path: '/',
@@ -63,5 +64,9 @@ export default new Router({
       name: 'Research',
       component: resolve=>require(['@/pages/Research/Index'],resolve)
     },
+    {
+      path: '*',
+      redirect: '/' // 输入其他不存在的地址自动跳回首页
+    }
   ]
 })

@@ -18,7 +18,7 @@
           </div>
           <div class="inputShow">
             <span>密码</span>
-            <input type="password" v-model="post.password" :class="{'active':isPassword}" ref="inputPassword" @blur="errBlur" @keyup.13="sub">
+            <input type="text" v-model="post.password" :class="{'active':isPassword}" ref="inputPassword" @blur="errBlur" @keyup.13="sub">
             <div class="errInfo">
               <transition name="fade">
                 <p v-show="isPassword">{{msg}}</p>
@@ -85,7 +85,7 @@
         if(self.msg){
           return false
         }else{
-          self.$http.post(`${process.env.API.API}/user/li`,{tel:self.post.tel,password:SHA1(self.post.password)}).then(res=>{
+          self.$http.post(`${process.env.API.API}/auth/user`,{name:'vinc',password:self.post.password}).then(res=>{
             if(res.data.errcode=='0'){
               self.$notify({
                 message:self.$t('loginSuccess'),

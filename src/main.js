@@ -11,8 +11,8 @@ import '@/assets/css/app.less'
 import Moment from 'moment'
 import fun from '@/plugin/main'
 // import { Upload } from 'element-ui'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css'
+// import ElementUI from 'element-ui'
+// import 'element-ui/lib/theme-default/index.css'
 import UserComponent from '@/components/index'
 
 
@@ -22,7 +22,7 @@ Vue.use(scroll)
 Vue.use(UserComponent)
 
 //引用element上传组件
-Vue.use(ElementUI)
+// Vue.use(ElementUI)
 
 //挂载js
 Vue.prototype.$http = Axios

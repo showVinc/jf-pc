@@ -10,8 +10,8 @@ switch(branch) {
     http_api = 'http://apidev.klocl.com:8000'
     break;
   case 'master':
-    http_url = 'http://119.28.41.251:8080'
-    http_api = 'http://119.28.41.251:8082'
+    http_url = ''
+    http_api = 'http://127.0.0.1:3000'
     break;
   case 'release':
     http_url = 'http://wwwrelease.klocl.com'
@@ -34,6 +34,6 @@ module.exports = {
     API: `"${http_api}/${version}"`,
   },
   dev_api: {
-    API: `"${http_api}/${version}"`,
+    API: `"${http_api}"`,
   }
 }
