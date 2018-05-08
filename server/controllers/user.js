@@ -12,11 +12,6 @@ const postUserAuth = async (ctx)=>{
   const data = ctx.request.body
   const userInfo = await user.getUserByName(data.name);
   if(userInfo != null){
-    let pas = hash.substr(0, 29);// 10 is by default
-    let psw = bcrypt.hashSync(data.password, pas);
-
-    // console.log(bcrypt.compareSync(psw, userInfo.password));
-    console.log(psw, userInfo.password);
     if(!bcrypt.compareSync(data.password, userInfo.password)){
       ctx.body = {
         status:false,
